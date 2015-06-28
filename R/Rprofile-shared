@@ -1,0 +1,37 @@
+
+## Core init settings: options, package loading, etc.
+
+## Set options
+local({
+    r <- getOption("repos")
+    r["CRAN"] <- "http://cran.cnr.Berkeley.edu"
+    options(
+        stringsAsFactors = FALSE
+        ,scipen = 5
+        ,datatable.print.topn = 10
+        ,repos = r
+        ,warn = 1
+        ,keep.source = FALSE
+    )
+})
+
+## Auto-completion for package names.
+utils::rc.settings(ipck = TRUE)
+
+
+.First <- function() {
+    ## Load other packages.
+    require(data.table)
+    require(Hmisc)
+    require(ggplot2)
+
+}
+
+.Last <- function() {
+    # Try saving history in current working dir.
+    if (!("--no-readline" %in% commandArgs()) && interactive()) {
+            try(savehistory(), silent = TRUE)
+    }
+}
+
+
