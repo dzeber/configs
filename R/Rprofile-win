@@ -2,7 +2,6 @@
 ## Setup relies on two env variables, R_PROFILE_DIR (dir containing this file), 
 ## and GIT_DIR, which should get set in ~/.Renviron.
 
-
 ## Execute shared init settings.
 source(file.path(Sys.getenv("R_PROFILE_DIR"), "Rprofile-shared"), local = TRUE)
 
