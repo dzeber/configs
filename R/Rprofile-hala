@@ -3,7 +3,7 @@
 
 
 ## Execute shared init settings.
-source(file.path(dirname(normalizePath(Sys.getenv("R_PROFILE_USER"))), 
+source(file.path(dirname(Sys.readlink(Sys.getenv("R_PROFILE_USER"))), 
     "Rprofile-shared"), local = TRUE)
 
 ## Set options
