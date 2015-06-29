@@ -41,7 +41,7 @@ local({
     ## Import the lib functions for working with Yahoo.
     srcfiles <- append(srcfiles, 
         file.dl(file.path("https://raw.githubusercontent.com/mozilla/",
-            "fhr-r-rollups/master/lib/yahoo.R"))
+            "fhr-r-rollups/master/lib/yahoo.R")))
     
     if(".customEnv" %in% search()) detach(".customEnv")
     .customEnv <- new.env()
