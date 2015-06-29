@@ -19,7 +19,7 @@ source(file.path(Sys.getenv("R_PROFILE_DIR"), "Rprofile-shared"), local = TRUE)
 local({
     ## Load site prefix file.
     ## This includes package loading for Rhipe and data.table.
-    source("/usr/local/share/rhipe.mozilla.setup.R")
+    source("/usr/local/share/rhipe.mozilla.setup.R", local = TRUE)
     
     ## Remove make.dt from site file to be replaced by custom version. 
     if(exists("make.dt", ".rhipeEnv")) rm(make.dt, pos = ".rhipeEnv")
@@ -39,9 +39,9 @@ local({
     srcfiles <- file.dl(file.path(
         "https://raw.githubusercontent.com/dzeber/work-tools/master/R/", paths))
     ## Import the lib functions for working with Yahoo.
-    srcfiles <- append(srcfiles, file.path("https://raw.githubusercontent.com/",
-        "mozilla/fhr-r-rollups/master/lib/yahoo.R"))
-    
+    srcfiles <- append(srcfiles, 
+        file.dl(file.path("https://raw.githubusercontent.com/mozilla/",
+            "fhr-r-rollups/master/lib/yahoo.R"))
     
     if(".customEnv" %in% search()) detach(".customEnv")
     .customEnv <- new.env()
