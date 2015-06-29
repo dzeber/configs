@@ -3,8 +3,7 @@
 
 
 ## Execute shared init settings.
-source(file.path(dirname(Sys.readlink(Sys.getenv("R_PROFILE_USER"))), 
-    "Rprofile-shared"), local = TRUE)
+source(file.path(Sys.getenv("R_PROFILE_DIR"), "Rprofile-shared"), local = TRUE)
 
 ## Set options
 # options(
@@ -12,18 +11,19 @@ source(file.path(dirname(Sys.readlink(Sys.getenv("R_PROFILE_USER"))),
     # stringsAsFactors = FALSE,
     # scipen = 5,
     # datatable.print.topn = 10
-)
+# )
 
-## Load site prefix file.
-## This includes package loading for Rhipe and data.table.
-source("/usr/local/share/rhipe.mozilla.setup.R")
-
-## Remove make.dt from site file to be replaced by custom version. 
-if(exists("make.dt", ".rhipeEnv")) rm(make.dt, pos = ".rhipeEnv")
 
 ## Load custom code to separate env on search path.
 ## Unload if the env already exists (ie if this script has already been run).
 local({
+    ## Load site prefix file.
+    ## This includes package loading for Rhipe and data.table.
+    source("/usr/local/share/rhipe.mozilla.setup.R")
+    
+    ## Remove make.dt from site file to be replaced by custom version. 
+    if(exists("make.dt", ".rhipeEnv")) rm(make.dt, pos = ".rhipeEnv")
+
     paths <- c(
         ## My Rhipe customizations.
         "rhipe/dzeber-prefix.R",
@@ -48,11 +48,9 @@ local({
     with(.customEnv,  {
         for(f in srcfiles) source(f, local = TRUE)
         rm(f)
-        file.dl <- file.dl # Does this work?
     })
-    # assign("file.dl", file.dl, envir = .customEnv)
+    assign("file.dl", file.dl, envir = .customEnv)
     attach(.customEnv)
-    rm(file.dl)
 # srcfiles <- file.dl(paste0(
     # "https://raw.githubusercontent.com/dzeber/work-tools/master/R/", paths))
 ## Import the lib functions for working with Yahoo.
