@@ -9,6 +9,18 @@
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+" Enable Vundle for plugin management.
+" Turn of filetype detection (required).
+filetype off
+" Set the runtime path to include Vundle and initialize.
+set rtp+=~/vimfiles/bundle/Vundle.vim
+" Pass the path where Vundle should install plugins
+call vundle#begin('~/vimfiles/')
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+call vundle#end()
+filetype plugin indent on
+
 
 "==========================================================================
 "
