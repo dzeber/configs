@@ -15,9 +15,10 @@ filetype off
 " Set the runtime path to include Vundle and initialize.
 set rtp+=~/vimfiles/bundle/Vundle.vim
 " Pass the path where Vundle should install plugins
-call vundle#begin('~/vimfiles/')
+call vundle#begin('~/vimfiles/bundle/')
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
+"Plugin 'bling/vim-airline'
 call vundle#end()
 filetype plugin indent on
 
@@ -62,6 +63,9 @@ set colorcolumn=80
 " Key mappings
 "
 
+" Use the default mapleader
+let mapleader = '\'
+
 " <Enter> to enter insert mode after cursor
 nnoremap <CR> a
 
@@ -71,11 +75,18 @@ inoremap <C-Space> <C-x><C-n>
 " <Shift-Enter> to return to normal mode
 inoremap <S-CR> <Esc>
 
+" System copy/paste shortcuts
+vmap <Leader>y "+y
+nmap <Leader>p "+p
+vmap <Leader>P "+P
 
 "==========================================================================
 "
 " Editing settings
 "
+
+" Encoding
+set encoding=utf-8
 
 " Allow backspacing over everything in insert mode
 set backspace=indent,eol,start
@@ -96,6 +107,9 @@ set completeopt=longest,menu
 "else
 "  set backup
 "endif
+
+" Hide rather than closing buffers
+set hidden
 
 " Switch to window if buffer already open
 set switchbuf=useopen
