@@ -9,6 +9,7 @@
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+
 " Enable Vundle for plugin management.
 " Turn of filetype detection (required).
 filetype off
@@ -32,6 +33,8 @@ set guifont=Consolas:h11
 color desert
 "color abra
 " (Good color schemes: darkblue, desert, slate)
+" Make comments italic
+highlight Comment gui=italic
 
 " For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
 let &guioptions = substitute(&guioptions, "t", "", "g")
@@ -51,7 +54,7 @@ set autoindent
 " Highlight current line
 set cursorline
 
-" Show matching parens/brackets
+"Show matching parens/brackets
 set showmatch
 
 " Highlight column 80
@@ -67,7 +70,7 @@ set colorcolumn=80
 let mapleader = '\'
 
 " <Enter> to enter insert mode after cursor
-nnoremap <CR> a
+"nnoremap <CR> a
 
 " <Ctrl-Space> to autocomplete from words in file
 inoremap <C-Space> <C-x><C-n>
@@ -78,7 +81,9 @@ inoremap <S-CR> <Esc>
 " System copy/paste shortcuts
 vmap <Leader>y "+y
 nmap <Leader>p "+p
-vmap <Leader>P "+P
+nmap <Leader>P "+P
+
+" TODO: scroll U/D a single line.
 
 "==========================================================================
 "
@@ -210,4 +215,24 @@ function MyDiff()
   endif
   silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
 endfunction
+
+
+"==========================================================================
+"
+" Load previous session if available
+"
+
+" Set info to save with session
+"set sessionoptions=blank,buffers,curdir,folds,options,resize,tabpages
+"set sessionoptions+=winpos,winsize
+ 
+" Default session file.
+" TODO: when sourcing the session in the vimrc, the status line changes to
+" somthing weird, and relative window sizing is screwed up
+"let defaultsession = expand("~/vimfiles/sessions/currentsession.vim")
+"if filereadable(defaultsession)
+ "   silent execute "source" defaultsession
+"endif
+
+" TODO: save session on exit (using VimLeave?)
 
