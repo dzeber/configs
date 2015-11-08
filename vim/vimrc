@@ -9,35 +9,32 @@
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+" Check whether Vim is running on Windows.
+"let s:on_windows = has("win32")
+
 
 " Enable Vundle for plugin management.
 " Turn of filetype detection (required).
-filetype off
+"filetype off
 " Set the runtime path to include Vundle and initialize.
-set rtp+=~/vimfiles/bundle/Vundle.vim
+" Different paths for Windows and Mac.
+"let vundlepath = has("win32") ? "vimfiles" : ".vim"
+"let &rtp += "~/" . vundlepath . "/bundle/Vundle.vim"
+" unlet vundlepath
 " Pass the path where Vundle should install plugins
-call vundle#begin('~/vimfiles/bundle/')
+"call vundle#begin('~/.vim/bundle/')
 " let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
+"Plugin 'VundleVim/Vundle.vim'
 "Plugin 'bling/vim-airline'
-call vundle#end()
+"call vundle#end()
 filetype plugin indent on
+
 
 
 "==========================================================================
 "
 " Visual/theme settings:
 "
-
-set guifont=Consolas:h11
-color desert
-"color abra
-" (Good color schemes: darkblue, desert, slate)
-" Make comments italic
-highlight Comment gui=italic
-
-" For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
-let &guioptions = substitute(&guioptions, "t", "", "g")
 
 " Keep cursor a few lines away from edges
 set scrolloff=3
@@ -49,7 +46,7 @@ set ruler
 set number
 
 " Indent new line same as previous
-set autoindent
+:set autoindent
 
 " Highlight current line
 set cursorline
@@ -59,6 +56,29 @@ set showmatch
 
 " Highlight column 80
 set colorcolumn=80
+
+" Color scheme
+color desert
+"color abra
+" (Good color schemes: darkblue, desert, slate)
+
+" Font
+if has("win32")
+    set guifont=Consolas:h11
+else
+    "set guifont=Monaco:h13
+    set guifont=Consolas:h14
+
+endif
+
+" Make comments italic
+highlight Comment gui=italic
+
+" Windows settings.
+if has("win32")
+    " For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
+    let &guioptions = substitute(&guioptions, "t", "", "g")
+endif
 
 
 "==========================================================================
@@ -79,10 +99,14 @@ inoremap <C-Space> <C-x><C-n>
 inoremap <S-CR> <Esc>
 
 " System copy/paste shortcuts
-vmap <Leader>y "+y
-nmap <Leader>p "+p
-nmap <Leader>P "+P
+vnoremap <Leader>y "+y
+nnoremap <Leader>p "+p
+nnoremap <Leader>P "+P
+"inoremap <Leader>p <Esc>"+pa
+"inoremap <Leader>P "+P
 
+" Shortcut for R
+inoremap <C-_> <lt>-
 " TODO: scroll U/D a single line.
 
 "==========================================================================
@@ -152,9 +176,9 @@ if &t_Co > 2 || has("gui_running")
 endif
 
 " Maximize if using GUI
-if has("gui_running")
-    au GUIEnter * simalt ~x
-endif
+"if has("gui_running")
+ "   au GUIEnter * simalt ~x
+"endif
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
@@ -162,12 +186,12 @@ if has("autocmd")
   " Use the default filetype settings, so that mail gets 'tw' set to 72,
   " 'cindent' is on in C files, etc.
   " Also load indent files, to automatically do language-dependent indenting.
-  filetype plugin indent on
+ " filetype plugin indent on
   " Put these in an autocmd group, so that we can delete them easily.
   augroup vimrcEx
   au!
   " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
+  "autocmd FileType text setlocal textwidth=78
   " When editing a file, always jump to the last known cursor position.
   " Don't do it when the position is invalid or when inside an event handler
   " (happens when dropping a file on gvim).
@@ -185,37 +209,37 @@ endif " has("autocmd")
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
 " Only define it when not defined already.
-if !exists(":DiffOrig")
-  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
-		  \ | wincmd p | diffthis
-endif
+"if !exists(":DiffOrig")
+"  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+"		  \ | wincmd p | diffthis
+"endif
 
 
-set diffexpr=MyDiff()
-function MyDiff()
-  let opt = '-a --binary '
-  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-  let arg1 = v:fname_in
-  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-  let arg2 = v:fname_new
-  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-  let arg3 = v:fname_out
-  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-  let eq = ''
-  if $VIMRUNTIME =~ ' '
-    if &sh =~ '\<cmd'
-      let cmd = '""' . $VIMRUNTIME . '\diff"'
-      let eq = '"'
-    else
-      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-    endif
-  else
-    let cmd = $VIMRUNTIME . '\diff'
-  endif
-  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-endfunction
-
+"set diffexpr=MyDiff()
+"function MyDiff()
+"  let opt = '-a --binary '
+"  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+"  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+"  let arg1 = v:fname_in
+"  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+"  let arg2 = v:fname_new
+"  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+"  let arg3 = v:fname_out
+"  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+"  let eq = ''
+"  if $VIMRUNTIME =~ ' '
+"    if &sh =~ '\<cmd'
+"      let cmd = '""' . $VIMRUNTIME . '\diff"'
+"      let eq = '"'
+"    else
+"      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+"    endif
+"  else
+"    let cmd = $VIMRUNTIME . '\diff'
+"  endif
+"  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
+"endfunction
+"
 
 "==========================================================================
 "
