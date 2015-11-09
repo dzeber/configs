@@ -10,14 +10,17 @@
 set nocompatible
 
 " Check whether Vim is running on Windows.
-"let s:on_windows = has("win32")
+let s:on_windows = has("win32")
 
-
-" Enable Vundle for plugin management.
+" Load plugins.
+" Enable Vundle for plugin management, if available.
+"let s:vimdir = split(&rtp, ",")[0]
+"let s:vundle_path = s:vimdir . "/bundle/Vundle.vim"
+"if isdirectory(s:vundle_path)
 " Turn of filetype detection (required).
 "filetype off
 " Set the runtime path to include Vundle and initialize.
-" Different paths for Windows and Mac.
+" Determine path to local config dir dynamically.
 "let vundlepath = has("win32") ? "vimfiles" : ".vim"
 "let &rtp += "~/" . vundlepath . "/bundle/Vundle.vim"
 " unlet vundlepath
@@ -28,7 +31,7 @@ set nocompatible
 "Plugin 'bling/vim-airline'
 "call vundle#end()
 filetype plugin indent on
-
+"endif
 
 
 "==========================================================================
@@ -38,22 +41,16 @@ filetype plugin indent on
 
 " Keep cursor a few lines away from edges
 set scrolloff=3
-
 " Show the cursor position all the time
 set ruler
-
 " Show line numbers
 set number
-
 " Indent new line same as previous
-:set autoindent
-
+set autoindent
 " Highlight current line
 set cursorline
-
 "Show matching parens/brackets
 set showmatch
-
 " Highlight column 80
 set colorcolumn=80
 
@@ -63,19 +60,18 @@ color desert
 " (Good color schemes: darkblue, desert, slate)
 
 " Font
-if has("win32")
+if s:on_windows
     set guifont=Consolas:h11
 else
     "set guifont=Monaco:h13
     set guifont=Consolas:h14
-
 endif
 
 " Make comments italic
 highlight Comment gui=italic
 
 " Windows settings.
-if has("win32")
+if s:on_windows
     " For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
     let &guioptions = substitute(&guioptions, "t", "", "g")
 endif
