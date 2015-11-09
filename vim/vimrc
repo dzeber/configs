@@ -63,8 +63,7 @@ color desert
 if s:on_windows
     set guifont=Consolas:h11
 else
-    "set guifont=Monaco:h13
-    set guifont=Consolas:h14
+    set guifont=Consolas:h14,Monaco:h13
 endif
 
 " Make comments italic
