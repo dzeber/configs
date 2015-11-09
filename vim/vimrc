@@ -12,26 +12,23 @@ set nocompatible
 " Check whether Vim is running on Windows.
 let s:on_windows = has("win32")
 
-" Load plugins.
-" Enable Vundle for plugin management, if available.
-"let s:vimdir = split(&rtp, ",")[0]
-"let s:vundle_path = s:vimdir . "/bundle/Vundle.vim"
-"if isdirectory(s:vundle_path)
-" Turn of filetype detection (required).
-"filetype off
-" Set the runtime path to include Vundle and initialize.
-" Determine path to local config dir dynamically.
-"let vundlepath = has("win32") ? "vimfiles" : ".vim"
-"let &rtp += "~/" . vundlepath . "/bundle/Vundle.vim"
-" unlet vundlepath
-" Pass the path where Vundle should install plugins
-"call vundle#begin('~/.vim/bundle/')
-" let Vundle manage Vundle, required
-"Plugin 'VundleVim/Vundle.vim'
-"Plugin 'bling/vim-airline'
-"call vundle#end()
-filetype plugin indent on
-"endif
+" Load plugins using Vundle for plugin management, if available.
+" First determine the path to Vundle.
+let s:vimdir = split(&rtp, ",")[0]
+let s:bundle_path = s:vimdir . "/bundle"
+let s:Vundle_path = s:bundle_path . "/Vundle.vim"
+if isdirectory(s:Vundle_path)
+    " Turn of filetype detection (required).
+    filetype off
+    " Set the runtime path to include Vundle and initialize.
+    let &rtp .= "," . s:Vundle_path
+    call vundle#begin(s:Vundle_path)
+    " Let Vundle manage Vundle, required
+    Plugin 'VundleVim/Vundle.vim'
+    "Plugin 'bling/vim-airline'
+    call vundle#end()
+    "filetype plugin indent on
+endif
 
 
 "==========================================================================
@@ -91,7 +88,7 @@ let mapleader = '\'
 inoremap <C-Space> <C-x><C-n>
 
 " <Shift-Enter> to return to normal mode
-inoremap <S-CR> <Esc>
+noremap <S-CR> <Esc>
 
 " System copy/paste shortcuts
 vnoremap <Leader>y "+y
