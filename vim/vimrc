@@ -26,6 +26,8 @@ if isdirectory(s:Vundle_path)
     " Let Vundle manage Vundle, required
     Plugin 'VundleVim/Vundle.vim'
     "Plugin 'bling/vim-airline'
+    " Extensive selection of color schemes.
+    Plugin 'flazz/vim-colorschemes'
     call vundle#end()
     "filetype plugin indent on
 endif
