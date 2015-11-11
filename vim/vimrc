@@ -15,14 +15,14 @@ let s:on_windows = has("win32")
 " Load plugins using Vundle for plugin management, if available.
 " First determine the path to Vundle.
 let s:vimdir = split(&rtp, ",")[0]
-let s:bundle_path = s:vimdir . "/bundle"
-let s:Vundle_path = s:bundle_path . "/Vundle.vim"
+let s:plugin_path = s:vimdir . "/bundle"
+let s:Vundle_path = s:plugin_path . "/Vundle.vim"
 if isdirectory(s:Vundle_path)
     " Turn of filetype detection (required).
     filetype off
     " Set the runtime path to include Vundle and initialize.
     let &rtp .= "," . s:Vundle_path
-    call vundle#begin(s:Vundle_path)
+    call vundle#begin(s:plugin_path)
     " Let Vundle manage Vundle, required
     Plugin 'VundleVim/Vundle.vim'
     "Plugin 'bling/vim-airline'
