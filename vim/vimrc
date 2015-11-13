@@ -54,7 +54,8 @@ set showmatch
 set colorcolumn=80
 
 " Color scheme
-color desert
+colorscheme molokai
+"color desert
 "color abra
 " (Good color schemes: darkblue, desert, slate)
 
