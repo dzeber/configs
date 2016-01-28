@@ -5,6 +5,8 @@
 ## Execute shared init settings.
 source(file.path(Sys.getenv("R_PROFILE_DIR"), "Rprofile-shared"), local = TRUE)
 
+## Make sure to use HTML help.
+options(help_type = "html")
 
 ## Load custom code to separate env on search path.
 local({
