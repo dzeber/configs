@@ -24,7 +24,10 @@ utils::rc.settings(ipck = TRUE)
     require(data.table)
     require(Hmisc)
     require(ggplot2)
-
+    ## Try setting width option dynamically
+    cols <- tryCatch(system("tput cols", intern = TRUE),
+        error = function(e) { "" })
+    if(nzchar(cols)) options(width = as.integer(cols))
 }
 
 .Last <- function() {
