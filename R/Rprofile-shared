@@ -24,6 +24,7 @@ utils::rc.settings(ipck = TRUE)
     require(data.table)
     require(Hmisc)
     require(ggplot2)
+    require(magrittr)
     ## Try setting width option dynamically
     cols <- tryCatch(system("tput cols", intern = TRUE),
         error = function(e) { "" })
