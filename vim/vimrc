@@ -252,7 +252,7 @@ let g:ctrlp_cmd = "CtrlPBuffer"
 " Search by filename by default
 let g:ctrlp_by_filename = 1
 " Larger search window
-let g:ctrlp_match_window = "max:30"
+let g:ctrlp_match_window = "order:ttb,max:30"
 " Start file searches from current working dir
 let g:ctrlp_working_path_mode = "c"
 " Include hidden files
