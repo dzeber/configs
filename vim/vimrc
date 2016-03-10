@@ -28,6 +28,8 @@ if isdirectory(s:Vundle_path)
     "Plugin 'bling/vim-airline'
     " Extensive selection of color schemes.
     Plugin 'flazz/vim-colorschemes'
+    " Fuzzy finder.
+    Plugin 'ctrlpvim/ctrlp.vim'
     call vundle#end()
     "filetype plugin indent on
 endif
@@ -52,9 +54,11 @@ set cursorline
 set showmatch
 " Highlight column 80
 set colorcolumn=80
+" Always show the status line
+set laststatus=2
 
 " Color scheme
-colorscheme molokai
+colorscheme wombat
 "color desert
 "color abra
 " (Good color schemes: darkblue, desert, slate)
@@ -235,6 +239,27 @@ endif " has("autocmd")
 "  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
 "endfunction
 "
+
+"==========================================================================
+"
+" Plugin settings
+"
+
+" ctrlp
+
+" Start in buffer search mode
+let g:ctrlp_cmd = "CtrlPBuffer"
+" Search by filename by default
+let g:ctrlp_by_filename = 1
+" Larger search window
+let g:ctrlp_match_window = "max:30"
+" Start file searches from current working dir
+let g:ctrlp_working_path_mode = "c"
+" Include hidden files
+let g:ctrlp_show_hidden = 1
+" Follow symlinks
+let g:ctrlp_follow_symlinks = 1
+
 
 "==========================================================================
 "
