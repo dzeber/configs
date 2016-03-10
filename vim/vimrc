@@ -57,6 +57,13 @@ set colorcolumn=80
 " Always show the status line
 set laststatus=2
 
+" Wrap long lines
+set wrap
+" Don't break in the middle of words
+set linebreak
+" Set indicator for wrapped lines
+set showbreak=--->
+
 " Color scheme
 colorscheme wombat
 "color desert
@@ -121,6 +128,9 @@ set backspace=indent,eol,start
 
 " Tabbing: always replace with 4 spaces
 set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+
+" Remove comment leader when joining lines
+set formatoptions+=j
 
 " Command autocompletion:
 set wildmode=longest:full
