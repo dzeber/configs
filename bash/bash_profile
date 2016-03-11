@@ -1,0 +1,47 @@
+#
+# Common bash configuration.
+# 
+# If additional machine-specific configs are required, such as env variables,
+# they can be set inside a local bash dotfile, from which this file can then
+# be sourced.
+#
+
+#==============================================================================
+#
+# Env variables
+# 
+
+# Customization for less.
+export LESS="--quit-if-one-screen --long-prompt --no-init --RAW-CONTROL-CHARS"
+# Customized command prompt.
+# If the variable HOST_NICKNAME is set, use it in the prompt.
+# Otherwise, use the hostname.
+export PS1="\u@${HOST_NICKNAME:-$HOSTNAME}: \W }\$ "
+
+
+#==============================================================================
+#
+# Aliases
+#
+
+# Customized views for (GNU) ls. 
+# Always use colours.
+alias ls='ls --color=auto'
+# Customized short form. 
+alias la='ls -A --group-directories-first'
+# Customized long form.
+alias ll='ls -lAUh'
+
+# R
+alias R='R --no-save'
+
+
+#==============================================================================
+
+# Enhanced bash completion.
+[ -r "/usr/local/etc/bash_completion" ] && . "/usr/local/etc/bash_completion"
+
+# Completion for AWS.
+[ -r "/usr/local/bin/aws_completer" ] && \
+    complete -C "/usr/local/bin/aws_completer" aws
+
