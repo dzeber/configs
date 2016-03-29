@@ -270,6 +270,8 @@ let g:ctrlp_show_hidden = 1
 " Follow symlinks
 let g:ctrlp_follow_symlinks = 1
 
+" Not startign in buffer mode. Workaround
+nnoremap <C-p> :CtrlPBuffer<CR>
 
 "==========================================================================
 "
