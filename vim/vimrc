@@ -30,6 +30,8 @@ if isdirectory(s:Vundle_path)
     Plugin 'flazz/vim-colorschemes'
     " Fuzzy finder.
     Plugin 'ctrlpvim/ctrlp.vim'
+    " Show mark locations on left of window.
+    "Plugin 'vim-scripts/ShowMarks'
     call vundle#end()
     "filetype plugin indent on
 endif
@@ -65,7 +67,9 @@ set linebreak
 set showbreak=--->
 
 " Color scheme
-colorscheme wombat
+colorscheme lucius
+set background=light
+"colorscheme wombat
 "color desert
 "color abra
 " (Good color schemes: darkblue, desert, slate)
