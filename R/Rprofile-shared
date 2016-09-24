@@ -1,60 +1,11 @@
 
-## Core init settings: options, package loading, etc.
+## Preferred packages and settings.
+## Shared scripts may rely on this.
 
-## Set options
-local({
-    r <- getOption("repos")
-    r["CRAN"] <- "http://cran.cnr.Berkeley.edu"
-    options(
-        stringsAsFactors = FALSE
-        ,scipen = 5
-        ,datatable.print.topn = 10
-        ,repos = r
-        ,warn = 1
-        ,keep.source = FALSE
-    )
-})
+options(stringsAsFactors = FALSE)
 
-## Auto-completion for package names.
-utils::rc.settings(ipck = TRUE)
-
-
-.First <- function() {
-    ## Load other packages.
-    require(data.table)
-    require(ggplot2)
-    ## Hmisc mostly for weighted statistics (mean/quantiles).
-    require(Hmisc)
-    ## magrittr for function chaining using the %>% operator.
-    require(magrittr)
-    ## Colouring for the R terminal.
-    require(colorout)
-    ## Customize colour scheme.
-    setOutputColors256(
-        const = 75,
-        infinite = 75,
-        normal = 157,
-        string = 76,
-        error = c(1,0,1),
-        ## Currently error message text is shown using the "error" colour,
-        ## as well as the "Error:" flag.
-        ## For warnings, the "Warning:" flag is shown using the "warn" colour,
-        ## whereas the text is printed in the colour for "stderror".
-        ## Thus, setting stderror = warn.
-        warn = c(1,0,228),
-        stderror = c(1,0,228),
-        verbose = FALSE)
-    ## Try setting width option dynamically
-    cols <- tryCatch(system("tput cols", intern = TRUE),
-        error = function(e) { "" })
-    if(nzchar(cols)) options(width = as.integer(cols))
-}
-
-.Last <- function() {
-    # Try saving history in current working dir.
-    if (!("--no-readline" %in% commandArgs()) && interactive()) {
-            try(savehistory(), silent = TRUE)
-    }
-}
-
+require(data.table)
+require(ggplot2)
+## Hmisc mostly for weighted statistics (mean/quantiles).
+require(Hmisc)
 

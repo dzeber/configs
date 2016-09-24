@@ -3,7 +3,8 @@
 ## and GIT_DIR, which should get set in ~/.Renviron.
 
 ## Execute shared init settings.
-source(file.path(Sys.getenv("R_PROFILE_DIR"), "Rprofile-shared"), local = TRUE)
+mainInit <- Sys.getenv("R_PROFILE_MAIN")
+if(nzchar(mainInit)) source(mainInit, local = TRUE)
 
 ## Make sure to use HTML help.
 options(help_type = "html")

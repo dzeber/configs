@@ -2,7 +2,8 @@
 ## Setup depends on R_PROFILE_DIR, which should be set in ~/.Renviron.
 
 ## Execute shared init settings.
-source(file.path(Sys.getenv("R_PROFILE_DIR"), "Rprofile-shared"), local = TRUE)
+mainInit <- Sys.getenv("R_PROFILE_MAIN")
+if(nzchar(mainInit)) source(mainInit, local = TRUE)
 
 ## Load custom code to separate env on search path.
 ## Unload if the env already exists (ie if this script has already been run).

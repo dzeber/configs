@@ -1,0 +1,78 @@
+
+## Core preferences for all R sessions.
+##
+## Settings in this file shouldn't affect running code, ie. scripts
+## should not rely on any of this.
+##
+## However, there is the option (for interactive sesssions) to run an
+## init file that does make such calls (eg. load commonly-used
+## packages). This is intended as a convenience when working in the R
+## terminal.
+##
+## The file to source will be read from the environment variable
+## R_PROFILE_SHARED. If this variable is set (eg. in ~/.Renviron), it
+## will get sourced in interactive sessions.
+
+local({
+
+## Use Berkeley repo for packages.
+r <- getOption("repos")
+r["CRAN"] <- "http://cran.cnr.Berkeley.edu"
+options(
+    scipen = 5
+    ,datatable.print.topn = 10
+    ,repos = r
+    ,warn = 1
+    ,keep.source = FALSE
+)
+
+if(interactive()) {
+    ## Auto-completion for package names.
+    utils::rc.settings(ipck = TRUE)
+
+    ## magrittr for function chaining using the %>% operator.
+    ## Currently only using this as a convenience at the interactive
+    ## command line.
+    require(magrittr)
+    
+    ## Custom colour scheme for the R terminal.
+    ## Intended for use with a dark blue background.
+    loadedColorout <- require(colorout)
+    if(loadedColorout) {
+        setOutputColors256(
+            const = 75,
+            infinite = 75,
+            normal = 157,
+            string = 76,
+            error = c(1,0,1),
+            ## Currently error message text is shown using the "error"
+            ## colour, as well as the "Error:" flag.
+            ## For warnings, the "Warning:" flag is shown using the
+            ## "warn" colour, whereas the text is printed in the colour
+            ## for "stderror".
+            ## Thus, setting stderror = warn.
+            warn = c(1,0,228),
+            stderror = c(1,0,228),
+            verbose = FALSE
+        )
+    }
+
+    ## Try setting width option dynamically
+    cols <- tryCatch(system("tput cols", intern = TRUE),
+        error = function(e) { "" })
+    if(nzchar(cols)) options(width = as.integer(cols))
+
+    ## Try running shared init file.
+    sharedInit <- Sys.getenv("R_PROFILE_SHARED")
+    if(nzchar(sharedInit)) source(sharedInit, local = TRUE)
+}
+
+})
+
+.Last <- function() {
+    ## Try saving history in current working dir.
+    if (!("--no-readline" %in% commandArgs()) && interactive()) {
+            try(savehistory(), silent = TRUE)
+    }
+}
+
