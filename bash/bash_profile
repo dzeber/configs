@@ -33,7 +33,7 @@ alias la='ls -A --group-directories-first'
 alias ll='ls -lAUh'
 
 # R
-alias R='R --no-save'
+#alias R='R --no-save'
 
 
 #==============================================================================

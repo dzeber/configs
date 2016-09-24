@@ -26,9 +26,13 @@ options(
     ,keep.source = FALSE
 )
 
+
 if(interactive()) {
     ## Auto-completion for package names.
     utils::rc.settings(ipck = TRUE)
+
+    ## Longer history.
+    Sys.setenv(R_HISTSIZE=10000)
 
     ## magrittr for function chaining using the %>% operator.
     ## Currently only using this as a convenience at the interactive
@@ -65,12 +69,24 @@ if(interactive()) {
     ## Try running shared init file.
     sharedInit <- Sys.getenv("R_PROFILE_SHARED")
     if(nzchar(sharedInit)) source(sharedInit, local = TRUE)
+
+    ## Want R to behave as if the '--no-save' option was passed,
+    ## but setting it in the Rprofile.
+    ## Unable to re-assignInNamespace the function 'q()' since it's
+    ## locked.
+    ## Instead, mask it from a custom environment.
+    .customEnv <- new.env()
+    qNoSave <- q
+    formals(qNoSave)$save <- "no"
+    .customEnv$q <- qNoSave
+    attach(.customEnv, warn.conflicts = FALSE)
 }
 
 })
 
 .Last <- function() {
-    ## Try saving history in current working dir.
+    ## Try saving history in current working dir (even though we aren't
+    ## saving the workspace.
     if (!("--no-readline" %in% commandArgs()) && interactive()) {
             try(savehistory(), silent = TRUE)
     }
