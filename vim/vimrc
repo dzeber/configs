@@ -74,11 +74,14 @@ set background=light
 "color abra
 " (Good color schemes: darkblue, desert, slate)
 
+" Don't let MacVim reset the colorscheme.
+let macvim_skip_colorscheme=1
+
 " Font
 if s:on_windows
     set guifont=Consolas:h11
 else
-    set guifont=Consolas:h14,Monaco:h13
+    set guifont=Consolas:h15,Monaco:h13
 endif
 
 " Make comments italic
