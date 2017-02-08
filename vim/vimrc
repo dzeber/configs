@@ -122,6 +122,22 @@ nnoremap <Leader>P "+P
 inoremap <C-_> <lt>-
 " TODO: scroll U/D a single line.
 
+
+"==========================================================================
+"
+" Command shortcuts
+"
+
+" Remap the `W` command to `w` to fix a common typo
+:command W w
+
+" Render RMarkdown
+:command Rmd ! Rscript --vanilla -e 'rmarkdown::render("%")'
+
+" Render Github-flavoured Markdown using Pandoc
+:command PdG ! pandoc % -s -f markdown_github -t html -o %:r.html --toc
+
+
 "==========================================================================
 "
 " Editing settings
@@ -152,6 +168,9 @@ set completeopt=longest,menu
 "else
 "  set backup
 "endif
+
+" Change working dir to containing dir of file in window
+set autochdir
 
 " Hide rather than closing buffers
 set hidden
