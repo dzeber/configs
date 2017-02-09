@@ -1,0 +1,33 @@
+#
+# Mozilla-specific bash configuration.
+# 
+
+# Copy a file to the web server on dashboard1, and make it visible.
+# Usage: publish_www <file> <server_dir>
+# <server_dir> is optional, defaults to "tmp".
+publish_www () {
+    # The path to the web server dir on dashboard1.
+    # Default to the 'tmp' subdir.
+    local WWW_DIR=/data/www/metrics.mozilla.com/protected/dzeber
+    WWW_DIR="$WWW_DIR/${2:-tmp}"
+    local WWW_FILE="$WWW_DIR/$1"
+
+    # Copy the file.
+    scp "$1" "dashboard1:$WWW_DIR"
+    # If copying failed, could be because the VPN was not connected.
+    if [[ "$?" != 0 ]]; then
+        echo "Copying failed. Is the VPN connected?"
+        exit 1
+    fi
+    echo "$1 was copied to $WWW_DIR"
+
+    # Check the permissions on the copied file.
+    local STAT_CMD="stat -c \"%a\" $WWW_FILE"
+    local PERMS_ON_SERVER=$(ssh dashboard1 "$STAT_CMD")
+    if [[ "$PERMS_ON_SERVER" != "644"  ]]; then
+        ssh dashboard1 "chmod 644 $WWW_FILE"
+        echo "Permissions updated."
+    fi
+}
+
+
