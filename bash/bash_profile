@@ -39,9 +39,6 @@ alias ll='ls -lAUh'
 #==============================================================================
 
 # Enhanced bash completion.
-[ -r "/usr/local/etc/bash_completion" ] && . "/usr/local/etc/bash_completion"
-
-# Completion for AWS.
-[ -r "/usr/local/bin/aws_completer" ] && \
-    complete -C "/usr/local/bin/aws_completer" aws
+BASH_COMP="/usr/local/etc/bash_completion"
+[ -r BASH_COMP ] && . BASH_COMP
 

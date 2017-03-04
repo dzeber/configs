@@ -1,31 +1,65 @@
 #
 # Mozilla-specific bash configuration.
 # 
+# Source this from local bash dotfiles.
 
-# Copy a file to the web server on dashboard1, and make it visible.
+#==============================================================================
+#
+# Env variables
+#
+
+# Our LDAP-protected web server.
+export WWW_SERVER=dashboard1
+# The www dir for hosting files behind LDAP.
+export WWW_BASEDIR=/data/www/metrics.mozilla.com/protected/dzeber
+
+# S3 buckets.
+#
+# Parquet datasets (Spark DataFrames).
+export S3_DT=s3://telemetry-parquet
+# Raw Telemetry data.
+export S3_RAWDATA=s3://net-mozaws-prod-us-west-2-pipeline-data
+# Telemetry metadata.
+export S3_METADATA=s3://net-mozaws-prod-us-west-2-pipeline-metadata
+# "Home dir" in Metrics bucket.
+export S3_HOME=s3://mozilla-metrics/user/dzeber
+
+
+#==============================================================================
+#
+# Aliases
+#
+
+
+#==============================================================================
+
+# Completion for AWS. Should be in PATH.
+AWS_COMP=$(command -v aws_completer)
+[ -n $AWS_COMP ] && complete -C "$AWS_COMP" aws
+
+# Copy a file to the web server, and make it visible.
 # Usage: publish_www <file> <server_dir>
 # <server_dir> is optional, defaults to "tmp".
 publish_www () {
-    # The path to the web server dir on dashboard1.
+    # The path to the web dir on the web server.
     # Default to the 'tmp' subdir.
-    local WWW_DIR=/data/www/metrics.mozilla.com/protected/dzeber
-    WWW_DIR="$WWW_DIR/${2:-tmp}"
-    local WWW_FILE="$WWW_DIR/$1"
+    local TARGET_DIR="$WWW_BASEDIR/${2:-tmp}"
+    local TARGET_FILE="$TARGET_DIR/$1"
 
     # Copy the file.
-    scp "$1" "dashboard1:$WWW_DIR"
+    scp "$1" "$WWW_SERVER:$TARGET_DIR"
     # If copying failed, could be because the VPN was not connected.
     if [[ "$?" != 0 ]]; then
         echo "Copying failed. Is the VPN connected?"
         exit 1
     fi
-    echo "$1 was copied to $WWW_DIR"
+    echo "$1 was copied to $TARGET_DIR"
 
     # Check the permissions on the copied file.
-    local STAT_CMD="stat -c \"%a\" $WWW_FILE"
+    local STAT_CMD="stat -c \"%a\" $TARGET_FILE"
     local PERMS_ON_SERVER=$(ssh dashboard1 "$STAT_CMD")
     if [[ "$PERMS_ON_SERVER" != "644"  ]]; then
-        ssh dashboard1 "chmod 644 $WWW_FILE"
+        ssh dashboard1 "chmod 644 $TARGET_FILE"
         echo "Permissions updated."
     fi
 }
