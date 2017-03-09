@@ -30,6 +30,9 @@ export S3_HOME=s3://mozilla-metrics/user/dzeber
 # Aliases
 #
 
+# Rmarkdown rendering.
+alias rmd='render_rmd'
+
 
 #==============================================================================
 
@@ -64,4 +67,8 @@ publish_www () {
     fi
 }
 
+# Render an Rmarkdown file to HTML.
+render_rmd () {
+    Rscript --vanilla -e "rmarkdown::render('$1')"
+}
 
