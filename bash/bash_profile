@@ -13,10 +13,20 @@
 
 # Customization for less.
 export LESS="--quit-if-one-screen --long-prompt --no-init --RAW-CONTROL-CHARS"
+
 # Customized command prompt.
+#
 # If the variable HOST_NICKNAME is set, use it in the prompt.
 # Otherwise, use the hostname.
-export PS1="\u@${HOST_NICKNAME:-$HOSTNAME}: \W }\$ "
+#
+# Add info for git repos:
+# - branch
+# - dirtiness indicator
+# - untracked files indicator
+export GIT_PS1_SHOWUNTRACKEDFILES=true
+export GIT_PS1_SHOWDIRTYSTATE=true
+#export GIT_PS1_SHOWUPSTREAM="auto"
+export PS1=$(printf '\u@:%s \W$(__git_ps1) }\$ ' ${HOST_NICKNAME:-$HOSTNAME})
 
 
 #==============================================================================
