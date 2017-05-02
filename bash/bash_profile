@@ -40,5 +40,5 @@ alias ll='ls -lAUh'
 
 # Enhanced bash completion.
 BASH_COMP="/usr/local/etc/bash_completion"
-[ -r BASH_COMP ] && . BASH_COMP
+[ -r $BASH_COMP ] && . $BASH_COMP
 
