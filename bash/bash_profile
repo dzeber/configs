@@ -19,14 +19,21 @@ export LESS="--quit-if-one-screen --long-prompt --no-init --RAW-CONTROL-CHARS"
 # If the variable HOST_NICKNAME is set, use it in the prompt.
 # Otherwise, use the hostname.
 #
-# Add info for git repos:
+# Add info for git repos, if functionality is available:
 # - branch
 # - dirtiness indicator
 # - untracked files indicator
-export GIT_PS1_SHOWUNTRACKEDFILES=true
-export GIT_PS1_SHOWDIRTYSTATE=true
-#export GIT_PS1_SHOWUPSTREAM="auto"
-export PS1=$(printf '\u@:%s \W$(__git_ps1) }\$ ' ${HOST_NICKNAME:-$HOSTNAME})
+GIT_PS1_CMD=$(command -v __git_ps1)
+if [ -n $GIT_PS1_CMD]; then
+    export GIT_PS1_SHOWUNTRACKEDFILES=true
+    export GIT_PS1_SHOWDIRTYSTATE=true
+    #export GIT_PS1_SHOWUPSTREAM="auto"
+    GIT_PS1_CMD=$(printf '$(%s)' $GIT_PS1_CMD)
+fi
+export PS1=$(printf '%s@:%s \W%s }\$ ' \
+                "\u" \
+                "${HOST_NICKNAME:-$HOSTNAME}" \
+                "$GIT_PS1_CMD")
 
 
 #==============================================================================
