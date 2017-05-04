@@ -6,10 +6,10 @@
 # be sourced.
 #
 
-#==============================================================================
-#
-# Env variables
-# 
+
+# Enhanced bash completion.
+BASH_COMP="/usr/local/etc/bash_completion"
+[ -r $BASH_COMP ] && . $BASH_COMP
 
 # Customization for less.
 export LESS="--quit-if-one-screen --long-prompt --no-init --RAW-CONTROL-CHARS"
@@ -24,7 +24,7 @@ export LESS="--quit-if-one-screen --long-prompt --no-init --RAW-CONTROL-CHARS"
 # - dirtiness indicator
 # - untracked files indicator
 GIT_PS1_CMD=$(command -v __git_ps1)
-if [ -n $GIT_PS1_CMD]; then
+if [ -n $GIT_PS1_CMD ]; then
     export GIT_PS1_SHOWUNTRACKEDFILES=true
     export GIT_PS1_SHOWDIRTYSTATE=true
     #export GIT_PS1_SHOWUPSTREAM="auto"
@@ -34,12 +34,6 @@ export PS1=$(printf '%s@:%s \W%s }\$ ' \
                 "\u" \
                 "${HOST_NICKNAME:-$HOSTNAME}" \
                 "$GIT_PS1_CMD")
-
-
-#==============================================================================
-#
-# Aliases
-#
 
 # Customized views for (GNU) ls. 
 # Always use colours.
@@ -51,11 +45,4 @@ alias ll='ls -lAUh'
 
 # R
 #alias R='R --no-save'
-
-
-#==============================================================================
-
-# Enhanced bash completion.
-BASH_COMP="/usr/local/etc/bash_completion"
-[ -r $BASH_COMP ] && . $BASH_COMP
 
