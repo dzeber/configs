@@ -30,7 +30,7 @@ if [ -n $GIT_PS1_CMD ]; then
     #export GIT_PS1_SHOWUPSTREAM="auto"
     GIT_PS1_CMD=$(printf '$(%s)' $GIT_PS1_CMD)
 fi
-export PS1=$(printf '%s@:%s \W%s }\$ ' \
+export PS1=$(printf '%s@%s: \W%s }\$ ' \
                 "\u" \
                 "${HOST_NICKNAME:-$HOSTNAME}" \
                 "$GIT_PS1_CMD")
@@ -42,6 +42,8 @@ alias ls='ls --color=auto'
 alias la='ls -A --group-directories-first'
 # Customized long form.
 alias ll='ls -lAUh'
+# Always use Vim (for cases where applications default to opening vi).
+alias vi='vim'
 
 # R
 #alias R='R --no-save'
