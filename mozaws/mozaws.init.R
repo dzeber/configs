@@ -2,6 +2,8 @@ library(mozaws)
 
 onhala <- grepl("hala", Sys.info()[["nodename"]])
 
+Mozaws.dir <- Sys.getenv("MOZAWS_INFO_DIR", unset = "~/.mozaws.clus")
+
 ## Set up the mozaws configuration options.
 aws.init(
     ec2key="20161025-dataops-dev",
@@ -54,8 +56,7 @@ emr.new <- function(mainnodes = 1, spotnodes = 0, runinit = TRUE, write = TRUE) 
 ## Check if <basedir> is set via the env variable MOZAWS_INFO_DIR.
 ## If not, supply the default value '~/.mozaws.clus'. 
 getClusterInfoDir <- function(cl) {
-    awsinfodir <- Sys.getenv("MOZAWS_INFO_DIR", unset = "~/.mozaws.clus")
-    sprintf("%s/%s", awsinfodir, cl$Id)
+    sprintf("%s/%s", Mozaws.dir, cl$Id)
 }
 
 isClusterTerminated <- function(cl) {
@@ -63,6 +64,18 @@ isClusterTerminated <- function(cl) {
     updated_cl$Status$State %in% c("TERMINATING", "TERMINATED")
 }
 
+## List clusters whose info is stored in the MOZAWS_INFO_DIR.
+listCurrentClusters <- function() {
+    clusters <- list.files(Mozaws.dir)
+    if(length(clusters) == 0)
+        cat("There are no clusters listed.\n")
+    for(clId in clusters) {
+        clpath <- file.path(Mozaws.dir, clId)
+        nm <- readLines(file.path(clpath, "cluster_name"), warn = FALSE)
+        ipad <- readLines(file.path(clpath, "dns_name"), warn = FALSE)
+        cat("%s (%s):  %s\n", clId, nm, ipad)
+    }
+}
 
 ## Write information about the cluster to the MOZAWS_INFO_DIR.
 ## A subdir for the cluster is created, named using the cluster ID (of the form
