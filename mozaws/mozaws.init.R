@@ -1,4 +1,14 @@
-library(mozaws)
+#############################################################################
+###
+###  Set-up script for working with mozaws.
+###
+###  Loads the mozaws package, sets up the config options, and defines
+###  convenience functions for launching and killing EMR clusters.
+###
+#############################################################################
+
+
+require(mozaws)
 
 onhala <- grepl("hala", Sys.info()[["nodename"]])
 
@@ -98,7 +108,7 @@ writeClusterInfo <- function(cl) {
     save(cl, file = sprintf("%s/cl.RData", clusInfoDir))
     sshconf <- paste(sprintf("## %s", cl$Name),
         sprintf("Host %s", cl$Id),
-        sprintf("    HostName %s\n", cl$MasterPublicDnsName),
+        sprintf("    HostName %s\n\n", cl$MasterPublicDnsName),
         sep = "\n")
     cat(sshconf, file = sprintf("%s/sshconfig", clusInfoDir))
     cat(sprintf("Wrote cluster info to %s/\n", clusInfoDir))
