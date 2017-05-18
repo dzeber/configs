@@ -46,22 +46,7 @@ emr.new <- function(mainnodes = 1, spotnodes = 0, runinit = TRUE, write = TRUE) 
         moz.init(cl)
     }
     if(spotnodes > 0) cl <- aws.modify.groups(cl, spotnodes, spotPrice=0.8)
-
-    if(write) {
-        ## Write cluster info to file.
-        ## IP address, start time and an RData containing the cluster object
-        ## are written to a subdir of the mozaws info dir  named using the
-        ## cluster ID (of the form "j-AAAAAAAAAAAAA").
-        clusInfoDir <- getClusterInfoDir(cl)
-        dir.create(clusInfoDir, showWarnings = FALSE, recursive = TRUE, mode = "0755")
-        cat(cl$MasterPublicDnsName, file = sprintf("%s/dns_name", clusInfoDir))
-        cat(as.character(as.POSIXlt(
-                cl$Status$Timeline$CreationDateTime, origin="1970-01-01")),
-            file = sprintf("%s/creation_time", clusInfoDir))
-        save(cl, file = sprintf("%s/cl.RData", clusInfoDir))
-        cat(sprintf("Wrote cluster info to %s/\n", clusInfoDir))
-    }
-
+    if(write) writeClusterInfo(cl)
     cl
 }
 
@@ -76,6 +61,43 @@ getClusterInfoDir <- function(cl) {
 isClusterTerminated <- function(cl) {
     updated_cl <- aws.clus.info(cl)
     updated_cl$Status$State %in% c("TERMINATING", "TERMINATED")
+}
+
+
+## Write information about the cluster to the MOZAWS_INFO_DIR.
+## A subdir for the cluster is created, named using the cluster ID (of the form
+## "j-AAAAAAAAAAAAA"). Then, the following information is written to individual
+## files:
+## - IP address
+## - cluster start time
+## - cluster name
+## - an RData containing the cluster object
+## - a .ssh/config-type file that can be used for ssh-ing into the cluster,
+##   with the host named using the cluster ID.
+writeClusterInfo <- function(cl) {
+    clusInfoDir <- getClusterInfoDir(cl)
+    dir.create(clusInfoDir, showWarnings = FALSE, recursive = TRUE, mode = "0755")
+    cat(cl$MasterPublicDnsName, file = sprintf("%s/dns_name", clusInfoDir))
+    cat(as.character(as.POSIXlt(
+            cl$Status$Timeline$CreationDateTime, origin="1970-01-01")),
+        file = sprintf("%s/creation_time", clusInfoDir))
+    cat(cl$Name, file = sprintf("%s/cluster_name", clusInfoDir))
+    save(cl, file = sprintf("%s/cl.RData", clusInfoDir))
+    sshconf <- paste(sprintf("## %s", cl$Name),
+        sprintf("Host %s", cl$Id),
+        sprintf("    HostName %s\n", cl$MasterPublicDnsName),
+        sep = "\n")
+    cat(sshconf, file = sprintf("%s/sshconfig", clusInfoDir))
+    cat(sprintf("Wrote cluster info to %s/\n", clusInfoDir))
+}
+
+## Delete stored info about the cluster.
+deleteClusterInfo <- function(cl) {
+    clusInfoDir <- getClusterInfoDir(cl)
+    if(dir.exists(clusInfoDir)) {
+        unlink(clusInfoDir, recursive = TRUE)
+        cat(sprintf("Deleted cluster info at %s/\n", clusInfoDir))
+    }
 }
 
 emr.kill <- function(cl) {
@@ -99,11 +121,7 @@ emr.kill <- function(cl) {
     }
     cat("Cluster shut down successfully\n")
     ## Delete cluster details written to disk, if any.
-    clusInfoDir <- getClusterInfoDir(cl)
-    if(dir.exists(clusInfoDir)) {
-        unlink(clusInfoDir, recursive = TRUE)
-        cat(sprintf("Deleted cluster info at %s/\n", clusInfoDir))
-    }
+    deleteClusterInfo(cl)
 }
 
 
