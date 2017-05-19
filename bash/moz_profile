@@ -1,74 +1,63 @@
 #
 # Mozilla-specific bash configuration.
 # 
-# Source this from local bash dotfiles.
+# Source this from local bash dotfiles. It will get sourced from ./bash_profile
+# automatically if USE_MOZ_PROFILE is "true".
+#
 
-#==============================================================================
-#
-# Env variables
-#
 
 # Our LDAP-protected web server.
-export WWW_SERVER=dashboard1
+export WWW_SERVER="dashboard1"
 # The www dir for hosting files behind LDAP.
-export WWW_BASEDIR=/data/www/metrics.mozilla.com/protected/dzeber
+export WWW_BASEDIR="/data/www/metrics.mozilla.com/protected/dzeber"
 
 # S3 buckets.
 #
 # Parquet datasets (Spark DataFrames).
-export S3_DT=s3://telemetry-parquet
+export S3_DT="s3://telemetry-parquet"
 # Raw Telemetry data.
-export S3_RAWDATA=s3://net-mozaws-prod-us-west-2-pipeline-data
+export S3_RAWDATA="s3://net-mozaws-prod-us-west-2-pipeline-data"
 # Telemetry metadata.
-export S3_METADATA=s3://net-mozaws-prod-us-west-2-pipeline-metadata
+export S3_METADATA="s3://net-mozaws-prod-us-west-2-pipeline-metadata"
 # "Home dir" in Metrics bucket.
-export S3_HOME=s3://mozilla-metrics/user/dzeber
+export S3_HOME="s3://mozilla-metrics/user/dzeber"
 
-
-#==============================================================================
-#
-# Aliases
-#
-
-# Rmarkdown rendering.
-alias rmd='render_rmd'
-
-
-#==============================================================================
-
-# Completion for AWS. Should be in PATH.
-AWS_COMP=$(command -v aws_completer)
-[ -n $AWS_COMP ] && complete -C "$AWS_COMP" aws
 
 # Copy a file to the web server, and make it visible.
 # Usage: publish_www <file> <server_dir>
 # <server_dir> is optional, defaults to "tmp".
 publish_www () {
+    if [[ "$#" == 0 ]]; then
+        local MSG="\nUsage: publish_www <html file> <server dir>"
+        MSG="$MSG\n    <html file>: the local file to publish to the web server"
+        MSG="$MSG\n    <server dir>: the path on the web server to serve the file from"
+        MSG="$MSG\n                  (relative to the base dir $WWW_BASEDIR/)."
+        MSG="$MSG\n                  Optional; defaults to 'tmp'."
+        echo -e "$MSG" 1>&2
+        return 1
+    fi
+
     # The path to the web dir on the web server.
     # Default to the 'tmp' subdir.
+    local HTML_FILENAME="$(basename "$1")"
     local TARGET_DIR="$WWW_BASEDIR/${2:-tmp}"
-    local TARGET_FILE="$TARGET_DIR/$1"
+    local TARGET_FILE="$TARGET_DIR/$HTML_FILENAME"
 
     # Copy the file.
     scp "$1" "$WWW_SERVER:$TARGET_DIR"
     # If copying failed, could be because the VPN was not connected.
     if [[ "$?" != 0 ]]; then
-        echo "Copying failed. Is the VPN connected?"
-        exit 1
+        echo "Copying failed. Is the VPN connected?" 1>&2
+        return 1
     fi
-    echo "$1 was copied to $TARGET_DIR"
+    echo "$HTML_FILENAME was copied to $TARGET_DIR"
 
     # Check the permissions on the copied file.
     local STAT_CMD="stat -c \"%a\" $TARGET_FILE"
-    local PERMS_ON_SERVER=$(ssh dashboard1 "$STAT_CMD")
+    local PERMS_ON_SERVER="$(ssh dashboard1 "$STAT_CMD")"
     if [[ "$PERMS_ON_SERVER" != "644"  ]]; then
         ssh dashboard1 "chmod 644 $TARGET_FILE"
         echo "Permissions updated."
     fi
-}
-
-# Render an Rmarkdown file to HTML.
-render_rmd () {
-    Rscript --vanilla -e "rmarkdown::render('$1')"
 }
 
