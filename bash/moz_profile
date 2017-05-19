@@ -28,8 +28,8 @@ export S3_HOME="s3://mozilla-metrics/user/dzeber"
 # <server_dir> is optional, defaults to "tmp".
 publish_www () {
     if [[ "$#" == 0 ]]; then
-        local MSG="\nUsage: publish_www <html file> <server dir>"
-        MSG="$MSG\n    <html file>: the local file to publish to the web server"
+        local MSG="\nUsage: publish_www <local file> <server dir>"
+        MSG="$MSG\n    <local file>: the file to publish to the web server"
         MSG="$MSG\n    <server dir>: the path on the web server to serve the file from"
         MSG="$MSG\n                  (relative to the base dir $WWW_BASEDIR/)."
         MSG="$MSG\n                  Optional; defaults to 'tmp'."
@@ -39,9 +39,9 @@ publish_www () {
 
     # The path to the web dir on the web server.
     # Default to the 'tmp' subdir.
-    local HTML_FILENAME="$(basename "$1")"
+    local LOCAL_FILENAME="$(basename "$1")"
     local TARGET_DIR="$WWW_BASEDIR/${2:-tmp}"
-    local TARGET_FILE="$TARGET_DIR/$HTML_FILENAME"
+    local TARGET_FILE="$TARGET_DIR/$LOCAL_FILENAME"
 
     # Copy the file.
     scp "$1" "$WWW_SERVER:$TARGET_DIR"
@@ -50,7 +50,7 @@ publish_www () {
         echo "Copying failed. Is the VPN connected?" 1>&2
         return 1
     fi
-    echo "$HTML_FILENAME was copied to $TARGET_DIR"
+    echo "$LOCAL_FILENAME was copied to $TARGET_DIR"
 
     # Check the permissions on the copied file.
     local STAT_CMD="stat -c \"%a\" $TARGET_FILE"
