@@ -5,11 +5,18 @@
 # they can be set inside a local bash dotfile, from which this file can then
 # be sourced.
 #
+# If USE_MOZ_PROFILE is set to "true", eg. in a local bash profile which sources
+# this script, the moz_profile script will be run (note that this may not work
+# if this script is sourced via a symlink).
+#
+# If USE_MOZAWS is set to "true", the ../mozaws/mozaws_profile script will be
+# run (note that this may not work if this script is sourced via a symlink).
+#
 
 
 # Enhanced bash completion.
 BASH_COMP="/usr/local/etc/bash_completion"
-[ -r $BASH_COMP ] && . $BASH_COMP
+[[ -r "$BASH_COMP" ]] && . "$BASH_COMP"
 
 # Customization for less.
 export LESS="--quit-if-one-screen --long-prompt --no-init --RAW-CONTROL-CHARS"
@@ -23,17 +30,22 @@ export LESS="--quit-if-one-screen --long-prompt --no-init --RAW-CONTROL-CHARS"
 # - branch
 # - dirtiness indicator
 # - untracked files indicator
-GIT_PS1_CMD=$(command -v __git_ps1)
-if [ -n $GIT_PS1_CMD ]; then
+GIT_PS1_CMD="$(command -v __git_ps1)"
+if [[ -n "$GIT_PS1_CMD" ]]; then
     export GIT_PS1_SHOWUNTRACKEDFILES=true
     export GIT_PS1_SHOWDIRTYSTATE=true
     #export GIT_PS1_SHOWUPSTREAM="auto"
     GIT_PS1_CMD=$(printf '$(%s)' $GIT_PS1_CMD)
 fi
-export PS1=$(printf '%s@%s: \W%s }\$ ' \
+export PS1="$(printf '%s@%s: \W%s }\$ ' \
                 "\u" \
                 "${HOST_NICKNAME:-$HOSTNAME}" \
-                "$GIT_PS1_CMD")
+                "$GIT_PS1_CMD")"
+
+# Completion for AWS. Should be in PATH.
+AWS_COMP="$(command -v aws_completer)"
+[[ -n "$AWS_COMP" ]] && complete -C "$AWS_COMP" aws
+
 
 # Customized views for (GNU) ls. 
 # Always use colours.
@@ -44,7 +56,26 @@ alias la='ls -A --group-directories-first'
 alias ll='ls -lAUh'
 # Always use Vim (for cases where applications default to opening vi).
 alias vi='vim'
+# Rmarkdown rendering.
+alias rmd='render_rmd'
 
 # R
 #alias R='R --no-save'
+
+# Render an Rmarkdown file to HTML.
+render_rmd () {
+    Rscript --vanilla -e "rmarkdown::render('$1')"
+}
+
+# Source Mozilla-specific config if required.
+if [[ "$USE_MOZ_PROFILE" == "true" ]]; then
+    THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    . "$THIS_DIR/moz_profile"
+fi
+
+# Source Mozilla-specific config if required.
+if [[ "$USE_MOZAWS" == "true" ]]; then
+    THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    . "$THIS_DIR/../mozaws/mozaws_profile"
+fi
 
