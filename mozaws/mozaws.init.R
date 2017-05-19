@@ -10,26 +10,41 @@
 
 require(mozaws)
 
-onhala <- grepl("hala", Sys.info()[["nodename"]])
+local({
+    ## The public key to use for logging into the cluster.
+    onhala <- grepl("hala", Sys.info()[["nodename"]])
+    pubkey <- if(onhala) {
+        "~/.ssh/id_rsa-aws-hala.pub"
+    } else {
+        "~/.ssh/id_rsa-aws.pub"
+    }
 
+    ## Set up the mozaws configuration options.
+    aws.init(
+        ec2key = "20161025-dataops-dev",
+        localpubkey = pubkey,
+        opts = list(
+            loguri = "s3://mozilla-metrics/share/logs/",
+            s3bucket = "mozilla-metrics/share/bootscriptsAndR",
+            timeout = "1440",
+            ec2attributes = "InstanceProfile='telemetry-spark-cloudformation-TelemetrySparkInstanceProfile-1SATUBVEXG7E3'",
+            configfile="https://s3-us-west-2.amazonaws.com/telemetry-spark-emr-2/configuration/configuration.json",
+            user = "dzeber@mozilla.com",
+            ## Call aws.clus.info to refresh the info before calling print on
+            ## a cluster object.
+            refreshBeforePrint = TRUE,
+            ## Use Spark 2.0
+            releaselabel = "emr-5.2.1")
+    )
+})
+
+## The dir where the cluster info gets stored.
+## For convenience, set this in the .bash_profile so that it is available
+## in the shell and in R sessions.
 Mozaws.dir <- Sys.getenv("MOZAWS_INFO_DIR", unset = "~/.mozaws.clus")
 
-## Set up the mozaws configuration options.
-aws.init(
-    ec2key="20161025-dataops-dev",
-    localpubkey = if(onhala) "~/.ssh/id_rsa-aws-hala.pub" else "~/.ssh/id_rsa-aws.pub",
-    opts = list(
-        loguri = "s3://mozilla-metrics/share/logs/",
-        s3bucket = "mozilla-metrics/share/bootscriptsAndR",
-        timeout = "1440",
-        ec2attributes = "InstanceProfile='telemetry-spark-cloudformation-TelemetrySparkInstanceProfile-1SATUBVEXG7E3'",
-        configfile="https://s3-us-west-2.amazonaws.com/telemetry-spark-emr-2/configuration/configuration.json",
-        user = "dzeber@mozilla.com",
-        ## Use Spark 2.0
-        releaselabel = "emr-5.2.1"
-))
-
 ## Install tools not included in standard ATMO environment.
+## This is done by running an AWS step.
 moz.init <- function(cl) {
     aws.step.run(cl,
         script = sprintf('s3://%s/run.user.script.sh',aws.options()$s3bucket),
@@ -42,9 +57,12 @@ moz.init <- function(cl) {
 ## Create a new cluster.
 ## If 'write' is TRUE, information about the cluster will be written
 ## to files in the dir returned by getClusterInfoDir().
-emr.new <- function(mainnodes = 1, spotnodes = 0, runinit = TRUE, write = TRUE) {
+## If 'runinit' is TRUE, an additional step will be run to install custom tools.
+emr.new <- function(name = NULL, mainnodes = 1, spotnodes = 0,
+                                            runinit = TRUE, write = TRUE) {
     awsOpts <- aws.options()
     cl <- aws.clus.create(
+        name = name,
         workers = mainnodes,
         verbose = TRUE,
         applications = c("Spark", "Hive", "Hadoop", "Zeppelin"),
@@ -57,18 +75,17 @@ emr.new <- function(mainnodes = 1, spotnodes = 0, runinit = TRUE, write = TRUE) 
         cat("Running the Step to add mozillametricstools code\n")
         moz.init(cl)
     }
-    if(spotnodes > 0) cl <- aws.modify.groups(cl, spotnodes, spotPrice=0.8)
     if(write) writeClusterInfo(cl)
+    if(spotnodes > 0) cl <- aws.modify.groups(cl, spotnodes, spotPrice=0.8)
     cl
 }
 
-## The dir to write info files for the given cluster: <basedir>/<clusterID>.
-## Check if <basedir> is set via the env variable MOZAWS_INFO_DIR.
-## If not, supply the default value '~/.mozaws.clus'. 
+## The dir to write info files for the given cluster: <basedir>/<clusterID>/.
 getClusterInfoDir <- function(cl) {
-    sprintf("%s/%s", Mozaws.dir, cl$Id)
+    file.path(Mozaws.dir, cl$Id)
 }
 
+## Check whether the cluster is shutting down.
 isClusterTerminated <- function(cl) {
     updated_cl <- aws.clus.info(cl)
     updated_cl$Status$State %in% c("TERMINATING", "TERMINATED")
@@ -78,12 +95,12 @@ isClusterTerminated <- function(cl) {
 listCurrentClusters <- function() {
     clusters <- list.files(Mozaws.dir)
     if(length(clusters) == 0)
-        cat("There are no clusters listed.\n")
+        cat("There are no clusters available.\n")
     for(clId in clusters) {
         clpath <- file.path(Mozaws.dir, clId)
         nm <- readLines(file.path(clpath, "cluster_name"), warn = FALSE)
         ipad <- readLines(file.path(clpath, "dns_name"), warn = FALSE)
-        cat("%s (%s):  %s\n", clId, nm, ipad)
+        cat(sprintf("%s (%s):  %s\n", clId, nm, ipad))
     }
 }
 
@@ -106,6 +123,9 @@ writeClusterInfo <- function(cl) {
         file = sprintf("%s/creation_time", clusInfoDir))
     cat(cl$Name, file = sprintf("%s/cluster_name", clusInfoDir))
     save(cl, file = sprintf("%s/cl.RData", clusInfoDir))
+    ## Create an ssh config block for the cluster listing the ID as the Host
+    ## identifier and the IP address to connect to.
+    ## The cluster name is also included as a comment.
     sshconf <- paste(sprintf("## %s", cl$Name),
         sprintf("Host %s", cl$Id),
         sprintf("    HostName %s\n\n", cl$MasterPublicDnsName),
@@ -123,6 +143,9 @@ deleteClusterInfo <- function(cl) {
     }
 }
 
+## Shut down a running cluster.
+## This function attempts to check for confirmation that the cluster is
+## terminating, and warns if it could not be confirmed.
 emr.kill <- function(cl) {
     aws.kill(cl)
     ## State should be updated pretty quickly.
