@@ -5,14 +5,22 @@
 # they can be set inside a local bash dotfile, from which this file can then
 # be sourced.
 #
-# If USE_MOZ_PROFILE is set to "true", eg. in a local bash profile which sources
-# this script, the moz_profile script will be run (note that this may not work
-# if this script is sourced via a symlink).
+# If this script is sourced with the arg '--moz_profile' supplied, the
+# ./moz_profile script will be run (note that this may not work if this script
+# is sourced via a symlink).
 #
-# If USE_MOZAWS is set to "true", the ../mozaws/mozaws_profile script will be
-# run (note that this may not work if this script is sourced via a symlink).
+# If this script is sourced with the arg '--mozaws' supplied, the
+# ./mozaws_profile script will be run (note that this may not work if this script
+# is sourced via a symlink).
 #
 
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --moz_profile) USE_MOZ_PROFILE="true" ;;
+        --mozaws) USE_MOZAWS="true" ;;
+    esac
+    shift
+done
 
 # Enhanced bash completion.
 BASH_COMP="/usr/local/etc/bash_completion"
@@ -24,7 +32,7 @@ export LESS="--quit-if-one-screen --long-prompt --no-init --RAW-CONTROL-CHARS"
 # Customized command prompt.
 #
 # If the variable HOST_NICKNAME is set, use it in the prompt.
-# Otherwise, use the hostname.
+# Otherwise, use the short form of the hostname.
 #
 # Add info for git repos, if functionality is available:
 # - branch
@@ -39,7 +47,7 @@ if [[ -n "$GIT_PS1_CMD" ]]; then
 fi
 export PS1="$(printf '%s@%s: \W%s }\$ ' \
                 "\u" \
-                "${HOST_NICKNAME:-$HOSTNAME}" \
+                "${HOST_NICKNAME:-\h}" \
                 "$GIT_PS1_CMD")"
 
 # Completion for AWS. Should be in PATH.
@@ -67,15 +75,8 @@ render_rmd () {
     Rscript --vanilla -e "rmarkdown::render('$1')"
 }
 
-# Source Mozilla-specific config if required.
-if [[ "$USE_MOZ_PROFILE" == "true" ]]; then
-    THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    . "$THIS_DIR/moz_profile"
-fi
-
-# Source Mozilla-specific config if required.
-if [[ "$USE_MOZAWS" == "true" ]]; then
-    THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    . "$THIS_DIR/../mozaws/mozaws_profile"
-fi
+# Source additional config scripts if required.
+THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+[[ "$USE_MOZ_PROFILE" == "true" ]] && . "$THIS_DIR/moz_profile"
+[[ "$USE_MOZAWS" == "true" ]] && . "$THIS_DIR/mozaws_profile"
 
