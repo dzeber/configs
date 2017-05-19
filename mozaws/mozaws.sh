@@ -23,13 +23,13 @@ alias ssh='mozaws_ssh_config && ssh -F ~/.ssh/config_mozaws_tmp'
 ## To pull in the config, use `ssh -F ~/.ssh/config_mozaws_tmp`
 mozaws_ssh_config() {
     ## How many mozaws clusters are listed in the info dir?
-    NUM_CLUS=$(ls -1 "$MOZAWS_INFO_DIR" | wc -l)
+    local NUM_CLUS=$(ls -1 "$MOZAWS_INFO_DIR" | wc -l)
     if [[ $NUM_CLUS -eq 0 ]]; then
         ## If no clusters are listed, just use the standard config file.
         cp ~/.ssh/config ~/.ssh/config_mozaws_tmp
     else
         ## Concatenate the config blocks for each cluster.
-        MOZAWS_CONFIG=$(cat $MOZAWS_INFO_DIR/*/sshconfig)
+        local MOZAWS_CONFIG=$(cat $MOZAWS_INFO_DIR/*/sshconfig)
         ## If there is only a single cluster listed, we want to be able to
         ## refer to it using the Host alias "aws".
         ## Append this to the Host line for its config block.
@@ -50,19 +50,20 @@ mozaws_ssh_config() {
 
 ## List current mozaws clusters.
 mozaws() {
-    CLUSTERS=$(ls -1 "$MOZAWS_INFO_DIR")
+    local CLUSTERS=$(ls -1 "$MOZAWS_INFO_DIR")
     if [[ $(echo "$CLUSTERS" | wc -w) -eq 0 ]]; then
         echo "There are no mozaws clusters available."
         return 0
     fi
     echo "Current mozaws clusters:"
     for CLUSID in $CLUSTERS; do
-        CLUSNAME=$(cat "$MOZAWS_INFO_DIR/$CLUSID/cluster_name")
-        CREATIONTIME=$(cat "$MOZAWS_INFO_DIR/$CLUSID/creation_time")
-        IPADDR=$(cat "$MOZAWS_INFO_DIR/$CLUSID/dns_name")
+        local CLUSNAME=$(cat "$MOZAWS_INFO_DIR/$CLUSID/cluster_name")
+        local CREATIONTIME=$(cat "$MOZAWS_INFO_DIR/$CLUSID/creation_time")
+        local IPADDR=$(cat "$MOZAWS_INFO_DIR/$CLUSID/dns_name")
         echo
         echo "Cluster $CLUSID ($CLUSNAME):"
         echo -e "\t- Created at $CREATIONTIME"
         echo -e "\t- Address: $IPADDR"
     done
 }
+
