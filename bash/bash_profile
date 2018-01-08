@@ -71,9 +71,17 @@ alias rmd='render_rmd'
 #alias R='R --no-save'
 
 # Render an Rmarkdown file to HTML.
-render_rmd () {
+render_rmd() {
     Rscript --vanilla -e "rmarkdown::render('$1')"
 }
+
+# Shortcut that works like ls for dirs and less for files.
+#list_or_less() {
+#    TARGET="$1"
+#    [[ -z "$TARGET" ]] && TARGET="."
+#    [[ -f 
+#}
+#
 
 # Source additional config scripts if required.
 THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
