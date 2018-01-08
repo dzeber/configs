@@ -137,6 +137,11 @@ inoremap <C-_> <lt>-
 " Render Github-flavoured Markdown using Pandoc
 :command PdG ! pandoc % -s -f markdown_github -t html -o %:r.html --toc
 
+" Save the current session
+:command Svs mksession! ~/.vim/sessions/current.vim
+
+" Load the last saved session
+:command Lds source ~/.vim/sessions/current.vim
 
 "==========================================================================
 "
