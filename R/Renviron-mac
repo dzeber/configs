@@ -1,0 +1,7 @@
+## Custom init file. 
+## Set locations of init files this way, relative to local git repos.
+GIT_DIR=~/git
+R_PROFILE_MAIN=${GIT_DIR}/configs/R/Rprofile-main
+R_PROFILE_SHARED=${GIT_DIR}/configs/R/Rprofile-shared
+#R_PROFILE_USER=${GIT_DIR}/configs/R/Rprofile-win
+R_PROFILE_USER=${R_PROFILE_MAIN}
