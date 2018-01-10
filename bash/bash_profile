@@ -67,7 +67,7 @@ alias ls='ls --color=auto'
 # Customized short form. 
 alias la='ls -A --group-directories-first'
 # Customized long form.
-alias ll='ls -lAUh'
+alias ll='ls -lAh'
 # Always use Vim (for cases where applications default to opening vi).
 alias vi='vim'
 # Rmarkdown rendering.
