@@ -22,9 +22,15 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-# Enhanced bash completion.
+# Enhanced bash completion, as installed using Homebrew.
+# Try looking for newer version first.
 BASH_COMP="/usr/local/etc/bash_completion"
-[[ -r "$BASH_COMP" ]] && . "$BASH_COMP"
+BASH_COMP_2="/usr/local/share/bash-completion/bash_completion"
+if [[ -r "$BASH_COMP_2" ]]; then
+    . "$BASH_COMP_2"
+elif [[ -r "$BASH_COMP" ]]; then
+    . "$BASH_COMP"
+fi
 
 # Customization for less.
 export LESS="--quit-if-one-screen --long-prompt --no-init --RAW-CONTROL-CHARS"
@@ -61,7 +67,7 @@ alias ls='ls --color=auto'
 # Customized short form. 
 alias la='ls -A --group-directories-first'
 # Customized long form.
-alias ll='ls -lAUh'
+alias ll='ls -lAh'
 # Always use Vim (for cases where applications default to opening vi).
 alias vi='vim'
 # Rmarkdown rendering.
