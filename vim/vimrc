@@ -30,6 +30,8 @@ if isdirectory(s:Vundle_path)
     Plugin 'flazz/vim-colorschemes'
     " Fuzzy finder.
     Plugin 'ctrlpvim/ctrlp.vim'
+    " Plugin to stop accidentally quitting windows.
+    Plugin 'Carpetsmoker/confirm_quit.vim'
     " Show mark locations on left of window.
     "Plugin 'vim-scripts/ShowMarks'
     call vundle#end()
@@ -303,6 +305,17 @@ let g:ctrlp_follow_symlinks = 1
 
 " Not startign in buffer mode. Workaround
 nnoremap <C-p> :CtrlPBuffer<CR>
+
+" confirm_quit
+
+" Don't create the default mappings.
+let g:confirm_quit_nomap = 1
+" Set the 'quit' commands to always ask for confirmation.
+cnoremap <silent> q<CR>  :call confirm_quit#confirm(0, 'always')<CR>
+cnoremap <silent> wq<CR> :call confirm_quit#confirm(1, 'always')<CR>
+cnoremap <silent> x<CR>  :call confirm_quit#confirm(1, 'always')<CR>
+nnoremap <silent> ZZ     :call confirm_quit#confirm(1, 'always')<CR>
+
 
 "==========================================================================
 "
