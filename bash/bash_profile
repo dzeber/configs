@@ -22,6 +22,9 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
+# Command completion
+# ------------------
+#
 # Enhanced bash completion, as installed using Homebrew.
 # Try looking for newer version first.
 BASH_COMP="/usr/local/etc/bash_completion"
@@ -32,6 +35,21 @@ elif [[ -r "$BASH_COMP" ]]; then
     . "$BASH_COMP"
 fi
 
+# Completion for AWS. Should be in PATH.
+AWS_COMP="$(command -v aws_completer)"
+[[ -n "$AWS_COMP" ]] && complete -C "$AWS_COMP" aws
+
+# Completion for pip, if installed.
+# Make sure to cover both Python 2 and Python 3
+command -v pip > /dev/null && eval "$(pip completion --bash)"
+command -v pip2 > /dev/null && eval "$(pip2 completion --bash)"
+command -v pip3 > /dev/null && eval "$(pip3 completion --bash)"
+
+
+
+# Other customizations
+# --------------------
+#
 # Customization for less.
 export LESS="--quit-if-one-screen --long-prompt --no-init --RAW-CONTROL-CHARS"
 
@@ -40,7 +58,7 @@ export LESS="--quit-if-one-screen --long-prompt --no-init --RAW-CONTROL-CHARS"
 # If the variable HOST_NICKNAME is set, use it in the prompt.
 # Otherwise, use the short form of the hostname.
 #
-# Add info for git repos, if functionality is available:
+# Also add info for git repos, if functionality is available:
 # - branch
 # - dirtiness indicator
 # - untracked files indicator
@@ -56,11 +74,9 @@ export PS1="$(printf '%s@%s: \W%s }\$ ' \
                 "${HOST_NICKNAME:-\h}" \
                 "$GIT_PS1_CMD")"
 
-# Completion for AWS. Should be in PATH.
-AWS_COMP="$(command -v aws_completer)"
-[[ -n "$AWS_COMP" ]] && complete -C "$AWS_COMP" aws
-
-
+# Aliases
+# -------
+#
 # Customized views for (GNU) ls. 
 # Always use colours.
 alias ls='ls --color=auto'
@@ -76,6 +92,9 @@ alias rmd='render_rmd'
 # R
 #alias R='R --no-save'
 
+# Functions
+# ---------
+#
 # Render an Rmarkdown file to HTML.
 render_rmd () {
     Rscript --vanilla -e "rmarkdown::render('$1')"
