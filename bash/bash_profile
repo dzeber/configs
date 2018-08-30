@@ -88,6 +88,11 @@ alias ll='ls -lAh'
 alias vi='vim'
 # Rmarkdown rendering.
 alias rmd='render_rmd'
+# virtualenv for specific Python versions.
+alias virtualenv='virtualenv -p python'
+alias virtualenv2='virtualenv -p python2'
+alias virtualenv3='virtualenv -p python3'
+
 
 # R
 #alias R='R --no-save'
