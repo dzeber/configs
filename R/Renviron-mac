@@ -5,3 +5,6 @@ R_PROFILE_MAIN=${GIT_DIR}/configs/R/Rprofile-main
 R_PROFILE_SHARED=${GIT_DIR}/configs/R/Rprofile-shared
 #R_PROFILE_USER=${GIT_DIR}/configs/R/Rprofile-win
 R_PROFILE_USER=${R_PROFILE_MAIN}
+
+## SPARK_HOME for Spark installed with Homebrew.
+SPARK_HOME=/usr/local/opt/apache-spark/libexec
