@@ -69,12 +69,13 @@ set linebreak
 set showbreak=--->
 
 " Color scheme
-colorscheme lucius
-set background=light
-"colorscheme wombat
+"colorscheme lucius
+"set background=light
+colorscheme wombat
 "color desert
 "color abra
-" (Good color schemes: darkblue, desert, slate)
+"colorscheme flatlandia
+"colorscheme elrodeo
 
 " Don't let MacVim reset the colorscheme.
 let macvim_skip_colorscheme=1
@@ -83,7 +84,9 @@ let macvim_skip_colorscheme=1
 if s:on_windows
     set guifont=Consolas:h11
 else
-    set guifont=Consolas:h15,Monaco:h13
+    " set guifont=Consolas:h15,Monaco:h13
+    " Inconsolata is also a good option.
+    set guifont=SourceCodePro-Regular:h14
 endif
 
 " Make comments italic
