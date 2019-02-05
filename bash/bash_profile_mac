@@ -22,3 +22,8 @@ export HOST_NICKNAME="mac"
 THIS_PATH=$(realpath -e "${BASH_SOURCE[0]}")
 THIS_DIR="$(cd "$(dirname "$THIS_PATH")" && pwd)"
 . "$THIS_DIR/bash_profile" --moz_profile --mozaws
+
+# Setting PATH for Python 3.5
+# The original version is saved in .bash_profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/3.5/bin:${PATH}"
+export PATH
