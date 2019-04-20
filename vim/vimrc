@@ -12,6 +12,12 @@ set nocompatible
 " Check whether Vim is running on Windows.
 let s:on_windows = has("win32")
 
+
+" Whether or not to use the dark theme defined below.
+" Otherwise uses light theme.
+let s:darktheme = 1
+
+
 " Load plugins using Vundle for plugin management, if available.
 " First determine the path to Vundle.
 let s:vimdir = split(&rtp, ",")[0]
@@ -68,27 +74,40 @@ set linebreak
 " Set indicator for wrapped lines
 set showbreak=--->
 
-" Color scheme
+if s:darktheme
+    " Dark colour scheme
+    colorscheme wombat256mod
+    set background=dark
+    if s:on_windows
+        set guifont=Consolas:h11
+    else
+        set guifont=SourceCodePro-Regular:h14
+    endif
+else
+    " Light colour scheme
+    colorscheme lucius
+    set background=light
+    if s:on_windows
+        set guifont=Consolas:h11
+    else
+        set guifont=Osaka-Mono:h16
+    endif
+endif
+
+" Other nice options
+"colorscheme kalisi
 "colorscheme lucius
-"set background=light
-colorscheme wombat
 "color desert
 "color abra
 "colorscheme flatlandia
 "colorscheme elrodeo
+"set guifont=Consolas:h15,Monaco:h13
+"set guifont=Inconsolata:h15
 
 " Don't let MacVim reset the colorscheme.
 let macvim_skip_colorscheme=1
 
 " Font
-if s:on_windows
-    set guifont=Consolas:h11
-else
-    " set guifont=Consolas:h15,Monaco:h13
-    " Inconsolata is also a good option.
-    set guifont=SourceCodePro-Regular:h14
-endif
-
 " Make comments italic
 highlight Comment gui=italic
 
