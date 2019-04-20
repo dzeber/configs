@@ -12,15 +12,15 @@ set nocompatible
 " Check whether Vim is running on Windows.
 let s:on_windows = has("win32")
 
-
 " Whether or not to use the dark theme defined below.
 " Otherwise uses light theme.
 let s:darktheme = 1
 
+" Identify the vim user config dir.
+let s:vimdir = split(&rtp, ",")[0]
 
 " Load plugins using Vundle for plugin management, if available.
 " First determine the path to Vundle.
-let s:vimdir = split(&rtp, ",")[0]
 let s:plugin_path = s:vimdir . "/bundle"
 let s:Vundle_path = s:plugin_path . "/Vundle.vim"
 if isdirectory(s:Vundle_path)
@@ -43,6 +43,9 @@ if isdirectory(s:Vundle_path)
     call vundle#end()
     "filetype plugin indent on
 endif
+
+" Path for current session file.
+let s:current_session_path = s:vimdir . "/sessions/current.vim"
 
 
 "==========================================================================
@@ -97,6 +100,7 @@ endif
 " Other nice options
 "colorscheme kalisi
 "colorscheme lucius
+"colorscheme neutron
 "color desert
 "color abra
 "colorscheme flatlandia
@@ -162,10 +166,9 @@ inoremap <C-_> <lt>-
 :command PdG ! pandoc % -s -f markdown_github -t html -o %:r.html --toc
 
 " Save the current session
-:command Svs mksession! ~/.vim/sessions/current.vim
-
+:execute "command Svs mksession!" s:current_session_path
 " Load the last saved session
-:command Lds source ~/.vim/sessions/current.vim
+:execute "command Lds source" s:current_session_path
 
 "==========================================================================
 "
