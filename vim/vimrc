@@ -365,7 +365,7 @@ function OnlineVimHelp(...)
     execute "silent !open " . s:helpurl
 endfunction
 
-command -nargs=? Help :call OnlineVimHelp(<f-args>)
+command -complete=help -nargs=? Help :call OnlineVimHelp(<f-args>)
 
 
 
