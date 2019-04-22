@@ -326,6 +326,52 @@ endif " has("autocmd")
 
 "==========================================================================
 "
+" Other
+"
+
+" Open online help
+" ----------------
+
+" Usage is the same as for the `help` command.
+" Opens the relevant help page from `vimhelp.org`.
+function OnlineVimHelp(...)
+    let s:helpurl = "https://vimhelp.org/"
+    if a:0
+        " A subject arg was passed.
+        " Figure out which help file and tag would match.
+        try
+            " Open help on this topic.
+            " If no match is found, the error will be reported and
+            " the function will abort.
+            execute "help " . a:1
+        endtry
+        " Figure out which help file was opened.
+        let s:helpfile = expand("%")
+        " See if help was opened at a specific tag.
+        let s:tagitems = gettagstack()['items']
+        let s:tagname = ""
+        if len(s:tagitems)
+            let s:tagname = s:tagitems[0]["tagname"]
+            let s:tagname = split(s:tagname, "@")[0]
+        endif
+        execute "helpclose"
+        " Open online help for this subject.
+        " Jump to the tag if available.
+        let s:helpurl .= s:helpfile . ".html"
+        if len(s:tagname)
+            let s:helpurl .= fnameescape("#" . s:tagname)
+        endif
+    endif
+    execute "silent !open " . s:helpurl
+endfunction
+
+command -nargs=? Help :call OnlineVimHelp(<f-args>)
+
+
+
+
+"==========================================================================
+"
 " Plugin settings
 "
 
