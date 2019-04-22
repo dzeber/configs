@@ -24,7 +24,7 @@ let s:vimdir = split(&rtp, ",")[0]
 let s:plugin_path = s:vimdir . "/bundle"
 let s:Vundle_path = s:plugin_path . "/Vundle.vim"
 if isdirectory(s:Vundle_path)
-    " Turn of filetype detection (required).
+    " Turn off filetype detection (required).
     filetype off
     " Set the runtime path to include Vundle and initialize.
     let &rtp .= "," . s:Vundle_path
@@ -184,8 +184,24 @@ set backspace=indent,eol,start
 " Tabbing: always replace with 4 spaces
 set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 
+" Hard wrap lines at 80 characters.
+set textwidth=80
+
 " Remove comment leader when joining lines
 set formatoptions+=j
+
+" Comment formatting:
+" Remove 'XCOMM' leader.
+set comments-=:XCOMM
+" Add comment leaders for VimScript, SQL.
+" Place at beginning of options string to avoid overriding single '-'.
+set comments^=nb:\",b:--
+" Don't repeat '>' leader on subsequent lines.
+set comments-=n:>
+set comments+=fnb:>
+" Recognize multiple '#' and '%' as comment leaders.
+set comments-=b:#,:%
+set comments+=nb:#,nb:%
 
 " Command autocompletion:
 set wildmode=longest:full
@@ -314,6 +330,7 @@ endif " has("autocmd")
 "
 
 " ctrlp
+" -----
 
 " Start in buffer search mode
 let g:ctrlp_cmd = "CtrlPBuffer"
@@ -332,6 +349,7 @@ let g:ctrlp_follow_symlinks = 1
 nnoremap <C-p> :CtrlPBuffer<CR>
 
 " confirm_quit
+" ------------
 
 " Don't create the default mappings.
 let g:confirm_quit_nomap = 1
