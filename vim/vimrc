@@ -178,6 +178,9 @@ inoremap <C-_> <lt>-
 " Encoding
 set encoding=utf-8
 
+" Automatically load external changes
+set autoread
+
 " Allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
@@ -235,6 +238,9 @@ set nobackup
 set nowritebackup
 set noswapfile
 
+" Require confirmation for closing unsaved file
+set confirm
+
 " Keep 50 lines of command line history
 set history=50
 
@@ -243,6 +249,9 @@ set showcmd
 
 " Do incremental searching
 set incsearch
+" Use smart case sensitivity for searching:
+" case-sensitive only if search term includes an uppercase letter
+set ignorecase smartcase
 
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
@@ -378,12 +387,21 @@ command -complete=help -nargs=? Help :call OnlineVimHelp(<f-args>)
 " ctrlp
 " -----
 
+" Set the key mapping.
+let g:ctrlp_map = "<C-P>"
 " Start in buffer search mode
 let g:ctrlp_cmd = "CtrlPBuffer"
 " Search by filename by default
 let g:ctrlp_by_filename = 1
+" Use regexp search by default
+let g:ctrlp_regexp = 1
 " Larger search window
 let g:ctrlp_match_window = "order:ttb,max:30"
+" Jump to any window if already open.
+" This setting appears to be broken currently.
+" To jump, press <Enter> for windows in the same tab
+" or <Ctrl-T> for buffers in a different tab.
+let g:ctrlp_switch_buffer = "et"
 " Start file searches from current working dir
 let g:ctrlp_working_path_mode = "c"
 " Include hidden files
@@ -391,8 +409,6 @@ let g:ctrlp_show_hidden = 1
 " Follow symlinks
 let g:ctrlp_follow_symlinks = 1
 
-" Not startign in buffer mode. Workaround
-nnoremap <C-p> :CtrlPBuffer<CR>
 
 " confirm_quit
 " ------------
