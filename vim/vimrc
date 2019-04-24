@@ -38,8 +38,9 @@ if isdirectory(s:Vundle_path)
     Plugin 'ctrlpvim/ctrlp.vim'
     " Plugin to stop accidentally quitting windows.
     Plugin 'Carpetsmoker/confirm_quit.vim'
+    "Plugin 'vim-airline/vim-airline'
     " Show mark locations on left of window.
-    "Plugin 'vim-scripts/ShowMarks'
+    Plugin 'kshenoy/vim-signature'
     call vundle#end()
     "filetype plugin indent on
 endif
@@ -108,12 +109,60 @@ endif
 "set guifont=Consolas:h15,Monaco:h13
 "set guifont=Inconsolata:h15
 
+" Switch syntax highlighting on, when the terminal has colors
+if &t_Co > 2 || has("gui_running")
+  syntax on
+endif
+
 " Don't let MacVim reset the colorscheme.
 let macvim_skip_colorscheme=1
 
 " Font
 " Make comments italic
 highlight Comment gui=italic
+
+" Clean up the appearance of the sign column.
+" For now, drop background colors and make the marks bold.
+" TODO: match the current color scheme.
+highlight SignColumn guibg=NONE ctermbg=NONE
+highlight SignatureMarkText term=bold cterm=bold gui=bold
+highlight SignatureMarkText ctermbg=NONE guibg=NONE
+
+" Maximize if using GUI
+"if has("gui_running")
+ "   au GUIEnter * simalt ~x
+"endif
+
+" In many terminal emulators the mouse works just fine, thus enable it.
+if has('mouse')
+  set mouse=a
+endif
+
+" Only do this part when compiled with support for autocommands.
+if has("autocmd")
+  " Enable file type detection.
+  " Use the default filetype settings, so that mail gets 'tw' set to 72,
+  " 'cindent' is on in C files, etc.
+  " Also load indent files, to automatically do language-dependent indenting.
+ " filetype plugin indent on
+  " Put these in an autocmd group, so that we can delete them easily.
+  augroup vimrcEx
+  au!
+  " For all text files set 'textwidth' to 78 characters.
+  "autocmd FileType text setlocal textwidth=78
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  " Also don't do it when the mark is in the first line, that is the default
+  " position when opening a file.
+  autocmd BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+  augroup END
+else
+  set autoindent		" always set autoindenting on
+endif " has("autocmd")
 
 " Windows settings.
 if s:on_windows
@@ -256,47 +305,6 @@ set ignorecase smartcase
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
-
-" In many terminal emulators the mouse works just fine, thus enable it.
-if has('mouse')
-  set mouse=a
-endif
-
-" Switch syntax highlighting on, when the terminal has colors
-if &t_Co > 2 || has("gui_running")
-  syntax on
-endif
-
-" Maximize if using GUI
-"if has("gui_running")
- "   au GUIEnter * simalt ~x
-"endif
-
-" Only do this part when compiled with support for autocommands.
-if has("autocmd")
-  " Enable file type detection.
-  " Use the default filetype settings, so that mail gets 'tw' set to 72,
-  " 'cindent' is on in C files, etc.
-  " Also load indent files, to automatically do language-dependent indenting.
- " filetype plugin indent on
-  " Put these in an autocmd group, so that we can delete them easily.
-  augroup vimrcEx
-  au!
-  " For all text files set 'textwidth' to 78 characters.
-  "autocmd FileType text setlocal textwidth=78
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).
-  " Also don't do it when the mark is in the first line, that is the default
-  " position when opening a file.
-  autocmd BufReadPost *
-    \ if line("'\"") > 1 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
-  augroup END
-else
-  set autoindent		" always set autoindenting on
-endif " has("autocmd")
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
