@@ -195,6 +195,10 @@ nnoremap <Leader>P "+P
 "inoremap <Leader>p <Esc>"+pa
 "inoremap <Leader>P "+P
 
+" Markdown section header underlines
+nnoremap <Leader>d :s/^#*\s*//<CR>yyp:s/./-/g<CR>
+nnoremap <Leader>D :s/^#*\s*//<CR>yyp:s/./=/g<CR>
+
 " Shortcut for R
 inoremap <C-_> <lt>-
 " TODO: scroll U/D a single line.
@@ -251,6 +255,8 @@ set comments^=nb:\",b:--
 " Don't repeat '>' leader on subsequent lines.
 set comments-=n:>
 set comments+=fnb:>
+" Add Markdown bullets.
+set comments+=fb:*,fb:+
 " Recognize multiple '#' and '%' as comment leaders.
 set comments-=b:#,:%
 set comments+=nb:#,nb:%
