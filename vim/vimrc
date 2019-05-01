@@ -42,186 +42,12 @@ if isdirectory(s:Vundle_path)
     " Show mark locations on left of window.
     Plugin 'kshenoy/vim-signature'
     call vundle#end()
-    "filetype plugin indent on
+    filetype plugin indent on
 endif
 
 " Path for current session file.
 let s:current_session_path = s:vimdir . "/sessions/current.vim"
 
-
-"==========================================================================
-"
-" Visual/theme settings:
-"
-
-" Keep cursor a few lines away from edges
-set scrolloff=3
-" Show the cursor position all the time
-set ruler
-" Show line numbers
-set number
-" Indent new line same as previous
-set autoindent
-" Highlight current line
-set cursorline
-"Show matching parens/brackets
-set showmatch
-" Highlight column 80
-set colorcolumn=80
-" Always show the status line
-set laststatus=2
-
-" Wrap long lines
-set wrap
-" Don't break in the middle of words
-set linebreak
-" Set indicator for wrapped lines
-set showbreak=--->
-
-if s:darktheme
-    " Dark colour scheme
-    colorscheme wombat256mod
-    set background=dark
-    if s:on_windows
-        set guifont=Consolas:h11
-    else
-        set guifont=SourceCodePro-Regular:h14
-    endif
-else
-    " Light colour scheme
-    colorscheme lucius
-    set background=light
-    if s:on_windows
-        set guifont=Consolas:h11
-    else
-        set guifont=Osaka-Mono:h16
-    endif
-endif
-
-" Other nice options
-"colorscheme kalisi
-"colorscheme lucius
-"colorscheme neutron
-"color desert
-"color abra
-"colorscheme flatlandia
-"colorscheme elrodeo
-"set guifont=Consolas:h15,Monaco:h13
-"set guifont=Inconsolata:h15
-
-" Switch syntax highlighting on, when the terminal has colors
-if &t_Co > 2 || has("gui_running")
-  syntax on
-endif
-
-" Don't let MacVim reset the colorscheme.
-let macvim_skip_colorscheme=1
-
-" Font
-" Make comments italic
-highlight Comment gui=italic
-
-" Clean up the appearance of the sign column.
-" For now, drop background colors and make the marks bold.
-" TODO: match the current color scheme.
-highlight SignColumn guibg=NONE ctermbg=NONE
-highlight SignatureMarkText term=bold cterm=bold gui=bold
-highlight SignatureMarkText ctermbg=NONE guibg=NONE
-
-" Maximize if using GUI
-"if has("gui_running")
- "   au GUIEnter * simalt ~x
-"endif
-
-" In many terminal emulators the mouse works just fine, thus enable it.
-if has('mouse')
-  set mouse=a
-endif
-
-" Only do this part when compiled with support for autocommands.
-if has("autocmd")
-  " Enable file type detection.
-  " Use the default filetype settings, so that mail gets 'tw' set to 72,
-  " 'cindent' is on in C files, etc.
-  " Also load indent files, to automatically do language-dependent indenting.
- " filetype plugin indent on
-  " Put these in an autocmd group, so that we can delete them easily.
-  augroup vimrcEx
-  au!
-  " For all text files set 'textwidth' to 78 characters.
-  "autocmd FileType text setlocal textwidth=78
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).
-  " Also don't do it when the mark is in the first line, that is the default
-  " position when opening a file.
-  autocmd BufReadPost *
-    \ if line("'\"") > 1 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
-  augroup END
-else
-  set autoindent		" always set autoindenting on
-endif " has("autocmd")
-
-" Windows settings.
-if s:on_windows
-    " For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
-    let &guioptions = substitute(&guioptions, "t", "", "g")
-endif
-
-
-"==========================================================================
-"
-" Key mappings
-"
-
-" Use the default mapleader
-let mapleader = '\'
-
-" <Enter> to enter insert mode after cursor
-"nnoremap <CR> a
-
-" <Ctrl-Space> to autocomplete from words in file
-inoremap <C-Space> <C-x><C-n>
-
-" <Shift-Enter> to return to normal mode
-noremap <S-CR> <Esc>
-
-" System copy/paste shortcuts
-vnoremap <Leader>y "+y
-nnoremap <Leader>p "+p
-nnoremap <Leader>P "+P
-"inoremap <Leader>p <Esc>"+pa
-"inoremap <Leader>P "+P
-
-" Markdown section header underlines
-nnoremap <Leader>d :s/^#*\s*//<CR>yyp:s/./-/g<CR>
-nnoremap <Leader>D :s/^#*\s*//<CR>yyp:s/./=/g<CR>
-
-" Shortcut for R
-inoremap <C-_> <lt>-
-" TODO: scroll U/D a single line.
-
-
-"==========================================================================
-"
-" Command shortcuts
-"
-
-" Remap the `W` command to `w` to fix a common typo
-:command W w
-
-" Render RMarkdown
-:command Rmd ! Rscript --vanilla -e 'rmarkdown::render("%")'
-
-" Render Github-flavoured Markdown using Pandoc
-:command PdG ! pandoc % -s -f markdown_github -t html -o %:r.html --toc
-
-" Save the current session
-:execute "command Svs mksession!" s:current_session_path
-" Load the last saved session
-:execute "command Lds source" s:current_session_path
 
 "==========================================================================
 "
@@ -308,9 +134,245 @@ set incsearch
 " case-sensitive only if search term includes an uppercase letter
 set ignorecase smartcase
 
+" Put these in an autocmd group, so that we can delete them easily.
+augroup vimrcEx
+  au!
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event
+  " handler (happens when dropping a file on gvim). 
+  " Also don't do it when the mark is in the first line:
+  " that is the default position when opening a file.
+  autocmd BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+augroup END
+
+
+"==========================================================================
+"
+" Mappings
+"
+
+" Use the default mapleader
+let mapleader = " "
+
+" <Ctrl-Space> to autocomplete from words in file
+inoremap <C-Space> <C-x><C-n>
+
+" <Shift-Enter> to return to normal mode
+noremap <S-CR> <Esc>
+
+" System copy/paste shortcuts
+vnoremap <Leader>y "+y
+nnoremap <Leader>p "+p
+nnoremap <Leader>P "+P
+"inoremap <Leader>p <Esc>"+pa
+"inoremap <Leader>P "+P
+
+" Toggle relative line numbers
+nnoremap <Leader>l :set relativenumber!<CR>
+
+" Markdown section header underlines
+nnoremap <Leader>d :s/^#*\s*//<CR>yyp:s/./-/g<CR>
+nnoremap <Leader>D :s/^#*\s*//<CR>yyp:s/./=/g<CR>
+
+" Shortcut for R
+inoremap <C-_> <lt>-
+" TODO: scroll U/D a single line.
+
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
+
+" Remap the `W` command to `w` to fix a common typo
+command W w
+
+" Render RMarkdown
+command Rmd ! Rscript --vanilla -e 'rmarkdown::render("%")'
+
+" Render Github-flavoured Markdown using Pandoc
+command PdG ! pandoc % -s -f markdown_github -t html -o %:r.html --toc
+
+" Colour scheme switching
+
+" Save the current session
+execute "command Svs mksession!" s:current_session_path
+" Load the last saved session
+execute "command Lds source" s:current_session_path
+
+
+"==========================================================================
+"
+" Visual/theme settings:
+"
+
+" Keep cursor a few lines away from edges
+set scrolloff=3
+" Show the cursor position all the time
+set ruler
+" Show line numbers
+set number
+" Indent new line same as previous
+set autoindent
+" Highlight current line
+set cursorline
+"Show matching parens/brackets
+set showmatch
+" Highlight column 80
+set colorcolumn=80
+" Always show the status line
+set laststatus=2
+
+" Wrap long lines
+set wrap
+" Don't break in the middle of words
+set linebreak
+" Set indicator for wrapped lines
+set showbreak=--->
+
+" Dark colour scheme
+function SwitchToDarkTheme()
+    colorscheme wombat256mod
+    set background=dark
+    if s:on_windows
+        set guifont=Consolas:h11
+    else
+        set guifont=SourceCodePro-Regular:h14
+    endif
+endfunction
+
+" Light colour scheme
+function SwitchToLightTheme()
+    colorscheme solarized
+    set background=light
+    if s:on_windows
+        set guifont=Consolas:h11
+    else
+        set guifont=Osaka-Mono:h16
+    endif
+endfunction
+
+command SwitchToDarkTheme :call SwitchToDarkTheme()
+command SwitchToLightTheme :call SwitchToLightTheme()
+
+if s:darktheme
+    call SwitchToDarkTheme()
+else
+    call SwitchToLightTheme()
+endif
+
+" Other nice options
+"colorscheme kalisi
+"colorscheme lucius
+"colorscheme neutron
+"color desert
+"color abra
+"colorscheme flatlandia
+"colorscheme elrodeo
+"set guifont=Consolas:h15,Monaco:h13
+"set guifont=Inconsolata:h15
+
+" Switch syntax highlighting on, when the terminal has colors
+if &t_Co > 2 || has("gui_running")
+  syntax on
+endif
+
+" Don't let MacVim reset the colorscheme.
+let macvim_skip_colorscheme=1
+
+" Font
+" Make comments italic
+highlight Comment gui=italic
+
+" Clean up the appearance of the sign column.
+" For now, drop background colors and make the marks bold.
+" TODO: match the current color scheme.
+highlight SignColumn guibg=NONE ctermbg=NONE
+highlight SignatureMarkText term=bold cterm=bold gui=bold
+highlight SignatureMarkText ctermbg=NONE guibg=NONE
+
+" Maximize if using GUI
+"if has("gui_running")
+ "   au GUIEnter * simalt ~x
+"endif
+
+" In many terminal emulators the mouse works just fine, thus enable it.
+if has("mouse")
+  set mouse=a
+endif
+
+" Windows settings.
+if s:on_windows
+    " For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
+    let &guioptions = substitute(&guioptions, "t", "", "g")
+endif
+
+
+"==========================================================================
+"
+" Other
+"
+
+" Open online help
+" ----------------
+
+" Usage is the same as for the `help` command.
+" Opens the relevant help page from `vimhelp.org`.
+function OnlineVimHelp(...)
+    let s:helpurl = "https://vimhelp.org/"
+    if a:0
+        " A subject arg was passed.
+        " Figure out which help file and tag would match.
+        try
+            " Open help on this topic.
+            " If no match is found, the error will be reported and
+            " the function will abort.
+            execute "help " . a:1
+        endtry
+        " Figure out which help file was opened.
+        let s:helpfile = expand("%")
+        " See if help was opened at a specific tag.
+        let s:tagitems = gettagstack()["items"]
+        let s:tagname = ""
+        if len(s:tagitems)
+            let s:tagname = s:tagitems[0]["tagname"]
+            let s:tagname = split(s:tagname, "@")[0]
+        endif
+        execute "helpclose"
+        " Open online help for this subject.
+        " Jump to the tag if available.
+        let s:helpurl .= s:helpfile . ".html"
+        if len(s:tagname)
+            let s:helpurl .= fnameescape("#" . s:tagname)
+        endif
+    endif
+    execute "silent !open " . s:helpurl
+endfunction
+
+command -complete=help -nargs=? Help :call OnlineVimHelp(<f-args>)
+
+
+" Automatic session management
+" ----------------------------
+
+" Set info to save with session
+"set sessionoptions=blank,buffers,curdir,folds,options,resize,tabpages
+"set sessionoptions+=winpos,winsize
+
+" Default session file.
+" TODO: when sourcing the session in the vimrc, the status line changes to
+" somthing weird, and relative window sizing is screwed up
+"let defaultsession = expand("~/vimfiles/sessions/currentsession.vim")
+"if filereadable(defaultsession)
+ "   silent execute "source" defaultsession
+"endif
+
+" TODO: save session on exit (using VimLeave?)
+
+
+" Diff command
+" ------------
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
@@ -319,7 +381,6 @@ inoremap <C-U> <C-G>u<C-U>
 "  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
 "		  \ | wincmd p | diffthis
 "endif
-
 
 "set diffexpr=MyDiff()
 "function MyDiff()
@@ -346,51 +407,6 @@ inoremap <C-U> <C-G>u<C-U>
 "  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
 "endfunction
 "
-
-"==========================================================================
-"
-" Other
-"
-
-" Open online help
-" ----------------
-
-" Usage is the same as for the `help` command.
-" Opens the relevant help page from `vimhelp.org`.
-function OnlineVimHelp(...)
-    let s:helpurl = "https://vimhelp.org/"
-    if a:0
-        " A subject arg was passed.
-        " Figure out which help file and tag would match.
-        try
-            " Open help on this topic.
-            " If no match is found, the error will be reported and
-            " the function will abort.
-            execute "help " . a:1
-        endtry
-        " Figure out which help file was opened.
-        let s:helpfile = expand("%")
-        " See if help was opened at a specific tag.
-        let s:tagitems = gettagstack()['items']
-        let s:tagname = ""
-        if len(s:tagitems)
-            let s:tagname = s:tagitems[0]["tagname"]
-            let s:tagname = split(s:tagname, "@")[0]
-        endif
-        execute "helpclose"
-        " Open online help for this subject.
-        " Jump to the tag if available.
-        let s:helpurl .= s:helpfile . ".html"
-        if len(s:tagname)
-            let s:helpurl .= fnameescape("#" . s:tagname)
-        endif
-    endif
-    execute "silent !open " . s:helpurl
-endfunction
-
-command -complete=help -nargs=? Help :call OnlineVimHelp(<f-args>)
-
-
 
 
 "==========================================================================
@@ -430,28 +446,7 @@ let g:ctrlp_follow_symlinks = 1
 " Don't create the default mappings.
 let g:confirm_quit_nomap = 1
 " Set the 'quit' commands to always ask for confirmation.
-cnoremap <silent> q<CR>  :call confirm_quit#confirm(0, 'always')<CR>
-cnoremap <silent> wq<CR> :call confirm_quit#confirm(1, 'always')<CR>
-cnoremap <silent> x<CR>  :call confirm_quit#confirm(1, 'always')<CR>
-nnoremap <silent> ZZ     :call confirm_quit#confirm(1, 'always')<CR>
-
-
-"==========================================================================
-"
-" Load previous session if available
-"
-
-" Set info to save with session
-"set sessionoptions=blank,buffers,curdir,folds,options,resize,tabpages
-"set sessionoptions+=winpos,winsize
- 
-" Default session file.
-" TODO: when sourcing the session in the vimrc, the status line changes to
-" somthing weird, and relative window sizing is screwed up
-"let defaultsession = expand("~/vimfiles/sessions/currentsession.vim")
-"if filereadable(defaultsession)
- "   silent execute "source" defaultsession
-"endif
-
-" TODO: save session on exit (using VimLeave?)
-
+cnoremap <silent> q<CR>  :call confirm_quit#confirm(0, "always")<CR>
+cnoremap <silent> wq<CR> :call confirm_quit#confirm(1, "always")<CR>
+cnoremap <silent> x<CR>  :call confirm_quit#confirm(1, "always")<CR>
+nnoremap <silent> ZZ     :call confirm_quit#confirm(1, "always")<CR>
