@@ -41,6 +41,21 @@ if isdirectory(s:Vundle_path)
     "Plugin 'vim-airline/vim-airline'
     " Show mark locations on left of window.
     Plugin 'kshenoy/vim-signature'
+    " Use 's' as a text object for delimiters, 'ss' for linewise
+    Plugin 'tpope/vim-surround'
+    " Allow plugins to work with '.'
+    Plugin 'tpope/vim-repeat'
+    " Use 'gc' as an operator to toggle comments, 'gcc' linewise
+    Plugin 'tpope/vim-commentary'
+    " Use custom text objects
+    Plugin 'kana/vim-textobj-user'
+    " Use 'au'/'iu' as a text object for URLs
+    Plugin 'jceb/vim-textobj-uri'
+    " Use 'av'/'iv' as a text object for words within camelCase/snake_case
+    Plugin 'Julian/vim-textobj-variable-segment'
+    " Use 'ai'/'ii' as a text object for indented blocks,
+    " 'aI' for lines above and below.
+    Plugin 'michaeljsmith/vim-indent-object'
     call vundle#end()
     filetype plugin indent on
 endif
@@ -186,13 +201,13 @@ inoremap <C-_> <lt>-
 inoremap <C-U> <C-G>u<C-U>
 
 " Remap the `W` command to `w` to fix a common typo
-command W w
+command! W w
 
 " Render RMarkdown
-command Rmd ! Rscript --vanilla -e 'rmarkdown::render("%")'
+command! Rmd ! Rscript --vanilla -e 'rmarkdown::render("%")'
 
 " Render Github-flavoured Markdown using Pandoc
-command PdG ! pandoc % -s -f markdown_github -t html -o %:r.html --toc
+command! PdG ! pandoc % -s -f markdown_github -t html -o %:r.html --toc
 
 " Colour scheme switching
 
@@ -200,6 +215,13 @@ command PdG ! pandoc % -s -f markdown_github -t html -o %:r.html --toc
 execute "command Svs mksession!" s:current_session_path
 " Load the last saved session
 execute "command Lds source" s:current_session_path
+
+" Quickly switching colour schemes
+command! SwitchToDarkTheme :call SwitchToDarkTheme()
+command! SwitchToLightTheme :call SwitchToLightTheme()
+
+" Open HTML help
+command! -complete=help -nargs=? Help :call OnlineVimHelp(<f-args>)
 
 
 "==========================================================================
@@ -232,7 +254,7 @@ set linebreak
 set showbreak=--->
 
 " Dark colour scheme
-function SwitchToDarkTheme()
+function! SwitchToDarkTheme()
     colorscheme wombat256mod
     set background=dark
     if s:on_windows
@@ -243,7 +265,7 @@ function SwitchToDarkTheme()
 endfunction
 
 " Light colour scheme
-function SwitchToLightTheme()
+function! SwitchToLightTheme()
     colorscheme solarized
     set background=light
     if s:on_windows
@@ -252,9 +274,6 @@ function SwitchToLightTheme()
         set guifont=Osaka-Mono:h16
     endif
 endfunction
-
-command SwitchToDarkTheme :call SwitchToDarkTheme()
-command SwitchToLightTheme :call SwitchToLightTheme()
 
 if s:darktheme
     call SwitchToDarkTheme()
@@ -319,7 +338,7 @@ endif
 
 " Usage is the same as for the `help` command.
 " Opens the relevant help page from `vimhelp.org`.
-function OnlineVimHelp(...)
+function! OnlineVimHelp(...)
     let s:helpurl = "https://vimhelp.org/"
     if a:0
         " A subject arg was passed.
@@ -349,8 +368,6 @@ function OnlineVimHelp(...)
     endif
     execute "silent !open " . s:helpurl
 endfunction
-
-command -complete=help -nargs=? Help :call OnlineVimHelp(<f-args>)
 
 
 " Automatic session management
