@@ -29,33 +29,44 @@ if isdirectory(s:Vundle_path)
     " Set the runtime path to include Vundle and initialize.
     let &rtp .= "," . s:Vundle_path
     call vundle#begin(s:plugin_path)
+
     " Let Vundle manage Vundle, required
     Plugin 'VundleVim/Vundle.vim'
-    "Plugin 'bling/vim-airline'
+
     " Extensive selection of color schemes.
     Plugin 'flazz/vim-colorschemes'
+
     " Fuzzy finder.
     Plugin 'ctrlpvim/ctrlp.vim'
+
     " Plugin to stop accidentally quitting windows.
     Plugin 'Carpetsmoker/confirm_quit.vim'
-    "Plugin 'vim-airline/vim-airline'
+
     " Show mark locations on left of window.
     Plugin 'kshenoy/vim-signature'
+
     " Use 's' as a text object for delimiters, 'ss' for linewise
     Plugin 'tpope/vim-surround'
+
     " Allow plugins to work with '.'
     Plugin 'tpope/vim-repeat'
+
     " Use 'gc' as an operator to toggle comments, 'gcc' linewise
     Plugin 'tpope/vim-commentary'
+
     " Use custom text objects
     Plugin 'kana/vim-textobj-user'
+
     " Use 'au'/'iu' as a text object for URLs
     Plugin 'jceb/vim-textobj-uri'
+
     " Use 'av'/'iv' as a text object for words within camelCase/snake_case
     Plugin 'Julian/vim-textobj-variable-segment'
+
     " Use 'ai'/'ii' as a text object for indented blocks,
     " 'aI' for lines above and below.
     Plugin 'michaeljsmith/vim-indent-object'
+
     call vundle#end()
     filetype plugin indent on
 endif
@@ -184,6 +195,10 @@ nnoremap <Leader>p "+p
 nnoremap <Leader>P "+P
 "inoremap <Leader>p <Esc>"+pa
 "inoremap <Leader>P "+P
+
+" Add new lines without staying in Insert mode
+nnoremap <Leader>o o<Esc>
+nnoremap <Leader>O O<Esc>
 
 " Toggle relative line numbers
 nnoremap <Leader>l :set relativenumber!<CR>
