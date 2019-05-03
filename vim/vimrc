@@ -9,12 +9,18 @@
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
-" Check whether Vim is running on Windows.
-let s:on_windows = has("win32")
+" Check environment.
+let s:on_windows = has("win32") || has("win32unix") || has("win64")
+let s:on_mac = has("mac") || has("macunix")
 
-" Whether or not to use the dark theme defined below.
-" Otherwise uses light theme.
-let s:darktheme = 1
+" Current theme settings - see below
+let s:current_font_win = "consolas"
+let s:current_font_mac = "source"
+let s:current_theme_dark = "wombat256mod"
+let s:current_theme_light = "solarized"
+let s:current_theme_term = "wombat256mod"
+" Whether or not to use the dark theme in GUI.
+let s:use_darktheme = 0
 
 " Identify the vim user config dir.
 let s:vimdir = split(&rtp, ",")[0]
@@ -58,9 +64,13 @@ if isdirectory(s:Vundle_path)
     Plugin 'kana/vim-textobj-user'
 
     " Use 'au'/'iu' as a text object for URLs
+    " Note: for some reason, this needs to be `PluginUpdate`-d manually
+    " before it will work.
     Plugin 'jceb/vim-textobj-uri'
 
     " Use 'av'/'iv' as a text object for words within camelCase/snake_case
+    " Note: for some reason, this needs to be `PluginUpdate`-d manually
+    " before it will work.
     Plugin 'Julian/vim-textobj-variable-segment'
 
     " Use 'ai'/'ii' as a text object for indented blocks,
@@ -104,20 +114,20 @@ set textwidth=80
 " Remove comment leader when joining lines
 set formatoptions+=j
 
-" Comment formatting:
-" Remove 'XCOMM' leader.
-set comments-=:XCOMM
-" Add comment leaders for VimScript, SQL.
-" Place at beginning of options string to avoid overriding single '-'.
-set comments^=nb:\",b:--
-" Don't repeat '>' leader on subsequent lines.
-set comments-=n:>
-set comments+=fnb:>
-" Add Markdown bullets.
-set comments+=fb:*,fb:+
-" Recognize multiple '#' and '%' as comment leaders.
-set comments-=b:#,:%
-set comments+=nb:#,nb:%
+" " Comment formatting:
+" " Remove 'XCOMM' leader.
+" set comments-=:XCOMM
+" " Add comment leaders for VimScript, SQL.
+" " Place at beginning of options string to avoid overriding single '-'.
+" set comments^=nb:\",b:--
+" " Don't repeat '>' leader on subsequent lines.
+" set comments-=n:>
+" set comments+=fnb:>
+" " Add Markdown bullets.
+" set comments+=fb:*,fb:+
+" " Recognize multiple '#' and '%' as comment leaders.
+" set comments-=b:#,:%
+" set comments+=nb:#,nb:%
 
 " Command autocompletion:
 set wildmode=longest:full
@@ -168,7 +178,7 @@ set ignorecase smartcase
 
 " Put these in an autocmd group, so that we can delete them easily.
 augroup vimrcEx
-  au!
+  autocmd!
   " When editing a file, always jump to the last known cursor position.
   " Don't do it when the position is invalid or when inside an event
   " handler (happens when dropping a file on gvim). 
@@ -176,7 +186,7 @@ augroup vimrcEx
   " that is the default position when opening a file.
   autocmd BufReadPost *
     \ if line("'\"") > 1 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
+    \   execute "normal! g`\"" |
     \ endif
 augroup END
 
@@ -237,13 +247,6 @@ execute "command Svs mksession!" s:current_session_path
 " Load the last saved session
 execute "command Lds source" s:current_session_path
 
-" Quickly switching colour schemes
-command! SwitchToDarkTheme :call SwitchToDarkTheme()
-command! SwitchToLightTheme :call SwitchToLightTheme()
-
-" Open HTML help
-command! -complete=help -nargs=? Help :call OnlineVimHelp(<f-args>)
-
 
 "==========================================================================
 "
@@ -274,54 +277,142 @@ set linebreak
 " Set indicator for wrapped lines
 set showbreak=--->
 
-" Dark colour scheme
-function! SwitchToDarkTheme()
-    colorscheme wombat256mod
-    set background=dark
-    if s:on_windows
-        set guifont=Consolas:h11
-    else
-        set guifont=SourceCodePro-Regular:h14
-    endif
-endfunction
 
-" Light colour scheme
-function! SwitchToLightTheme()
-    colorscheme solarized
-    set background=light
-    if s:on_windows
-        set guifont=Consolas:h11
-    else
-        set guifont=Osaka-Mono:h16
-    endif
-endfunction
+"------------------------------
+" Set up functions to set favourite fonts and colorschemes
+"
 
-if s:darktheme
-    call SwitchToDarkTheme()
-else
-    call SwitchToLightTheme()
+let s:has_colours = &t_Co > 2 || has("gui")
+
+if has("gui")
+    let s:favourite_fonts = {
+        \"consolas": "Consolas:h11",
+        \"osaka": "Osaka-Mono:h16",
+        \"source": "SourceCodePro-Regular:h14",
+        \"monaco": "Monaco:h13",
+        \"inconsolata": "Inconsolata:h15",
+    \}
+
+    function! ListFavouriteFonts()
+        for [l:k, l:v] in items(s:favourite_fonts)
+            echo l:k . " :  " l:v
+        endfor
+    endfunction
+
+    " Display the font list
+    command! FavouriteFonts :call ListFavouriteFonts()
+
+    " Set the `guifont` option to the arg value.
+    " Try looking up the arg as a key in the favourite font dict.
+    " If not found, try using it directly as a font name.
+    function! SetFont(fontkey)
+        if has_key(s:favourite_fonts, a:fontkey)
+            let l:font = s:favourite_fonts[a:fontkey]
+        else
+            " If the given value is not a key in the font dict,
+            " try using it as a font name directly.
+            let l:font = a:fontkey
+        endif
+        " Use 'set' so as to throw an error if the font is invalid.
+        " Using 'let' was failing silently.
+        execute "set guifont=" . l:font
+    endfunction
+
+    " Switch fonts from a list of favourites identified by keyword.
+    command!
+        \ -complete=customlist,s:ListFontKeys
+        \ -nargs=1
+        \ SetFont
+        \ :call SetFont(<q-args>)
+
+    " Use font keys as the completion suggestions
+    function! s:ListFontKeys(A, L, P)
+        return keys(s:favourite_fonts)
+    endfunction
 endif
 
-" Other nice options
-"colorscheme kalisi
-"colorscheme lucius
-"colorscheme neutron
-"color desert
-"color abra
-"colorscheme flatlandia
-"colorscheme elrodeo
-"set guifont=Consolas:h15,Monaco:h13
-"set guifont=Inconsolata:h15
-
-" Switch syntax highlighting on, when the terminal has colors
-if &t_Co > 2 || has("gui_running")
-  syntax on
+" Set current font.
+if has("gui_running")
+    if s:on_windows
+        call SetFont(s:current_font_win)
+    elif s:on_mac
+        call SetFont(s:current_font_mac)
+    endif
 endif
 
-" Don't let MacVim reset the colorscheme.
-let macvim_skip_colorscheme=1
 
-" Font
+if s:has_colours
+    let s:favourite_dark_themes = [
+        \"wombat256mod",
+        \"desert",
+        \"kalisi",
+        \"flatlandia",
+    \]
+
+    let s:favourite_light_themes = [
+        \"solarized",
+        \"lucius",
+    \]
+
+    function! ListFavouriteDarkThemes()
+        for l:t in s:favourite_dark_themes
+            echo l:t
+        endfor
+    endfunction
+
+    function! ListFavouriteLightThemes()
+        for l:t in s:favourite_light_themes
+            echo l:t
+        endfor
+    endfunction
+
+    command! FavouriteDarkThemes :call ListFavouriteDarkThemes()
+    command! FavouriteLightThemes :call ListFavouriteLightThemes()
+
+    " Set light or dark colour schemes.
+    " Explicitly set `background` value.
+    function! SetDarkTheme(colorscheme)
+        set background=dark
+        execute "colorscheme " . a:colorscheme
+    endfunction
+
+    function! SetLightTheme(colorscheme)
+        set background=light
+        execute "colorscheme " . a:colorscheme
+    endfunction
+
+    command!
+        \ -complete=color
+        \ -nargs=1
+        \ SetDarkTheme
+        \ :call SetDarkTheme(<q-args>)
+    command!
+        \ -complete=color
+        \ -nargs=1
+        \ SetLightTheme
+        \ :call SetLightTheme(<q-args>)
+
+    " Set current color scheme.
+    if has("gui")
+        if s:use_darktheme
+            call SetDarkTheme(s:current_theme_dark)
+        else
+            call SetLightTheme(s:current_theme_light)
+        endif
+    else
+        call SetDarkTheme(s:current_theme_term)
+    end
+
+    " Switch syntax highlighting on
+    syntax on
+
+    " Don't let MacVim reset the colorscheme.
+    if s:on_mac
+        let macvim_skip_colorscheme=1
+    endif
+endif
+
+
 " Make comments italic
 highlight Comment gui=italic
 
@@ -360,7 +451,7 @@ endif
 " Usage is the same as for the `help` command.
 " Opens the relevant help page from `vimhelp.org`.
 function! OnlineVimHelp(...)
-    let s:helpurl = "https://vimhelp.org/"
+    let l:helpurl = "https://vimhelp.org/"
     if a:0
         " A subject arg was passed.
         " Figure out which help file and tag would match.
@@ -371,24 +462,28 @@ function! OnlineVimHelp(...)
             execute "help " . a:1
         endtry
         " Figure out which help file was opened.
-        let s:helpfile = expand("%")
+        let l:helpfile = expand("%")
         " See if help was opened at a specific tag.
-        let s:tagitems = gettagstack()["items"]
-        let s:tagname = ""
-        if len(s:tagitems)
-            let s:tagname = s:tagitems[0]["tagname"]
-            let s:tagname = split(s:tagname, "@")[0]
+        let l:tagitems = gettagstack()["items"]
+        let l:tagname = ""
+        if len(l:tagitems)
+            let l:tagname = l:tagitems[0]["tagname"]
+            let l:tagname = split(l:tagname, "@")[0]
         endif
         execute "helpclose"
         " Open online help for this subject.
         " Jump to the tag if available.
-        let s:helpurl .= s:helpfile . ".html"
-        if len(s:tagname)
-            let s:helpurl .= fnameescape("#" . s:tagname)
+        let l:helpurl .= l:helpfile . ".html"
+        if len(l:tagname)
+            let l:helpurl .= fnameescape("#" . l:tagname)
         endif
     endif
-    execute "silent !open " . s:helpurl
+    execute "silent !open " . l:helpurl
 endfunction
+
+" Open HTML help
+command! -complete=help -nargs=? Help :call OnlineVimHelp(<f-args>)
+command! -complete=help -nargs=? H :call OnlineVimHelp(<f-args>)
 
 
 " Automatic session management
