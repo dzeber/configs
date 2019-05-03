@@ -67,6 +67,12 @@ if isdirectory(s:Vundle_path)
     " 'aI' for lines above and below.
     Plugin 'michaeljsmith/vim-indent-object'
 
+    " Tabular formatting
+    Plugin 'godlygeek/tabular'
+
+    " Markdown-specific functionality
+    Plugin 'plasticboy/vim-markdown'
+
     call vundle#end()
     filetype plugin indent on
 endif
@@ -451,23 +457,31 @@ endfunction
 
 " Set the key mapping.
 let g:ctrlp_map = "<C-P>"
+
 " Start in buffer search mode
 let g:ctrlp_cmd = "CtrlPBuffer"
+
 " Search by filename by default
 let g:ctrlp_by_filename = 1
+
 " Use regexp search by default
 let g:ctrlp_regexp = 1
+
 " Larger search window
 let g:ctrlp_match_window = "order:ttb,max:30"
+
 " Jump to any window if already open.
 " This setting appears to be broken currently.
 " To jump, press <Enter> for windows in the same tab
 " or <Ctrl-T> for buffers in a different tab.
 let g:ctrlp_switch_buffer = "et"
+
 " Start file searches from current working dir
 let g:ctrlp_working_path_mode = "c"
+
 " Include hidden files
 let g:ctrlp_show_hidden = 1
+
 " Follow symlinks
 let g:ctrlp_follow_symlinks = 1
 
@@ -477,8 +491,34 @@ let g:ctrlp_follow_symlinks = 1
 
 " Don't create the default mappings.
 let g:confirm_quit_nomap = 1
+
 " Set the 'quit' commands to always ask for confirmation.
 cnoremap <silent> q<CR>  :call confirm_quit#confirm(0, "always")<CR>
 cnoremap <silent> wq<CR> :call confirm_quit#confirm(1, "always")<CR>
 cnoremap <silent> x<CR>  :call confirm_quit#confirm(1, "always")<CR>
 nnoremap <silent> ZZ     :call confirm_quit#confirm(1, "always")<CR>
+
+
+" vim-markdown
+" ------------
+
+" Enable additional syntax highlighting
+let g:vim_markdown_math = 1
+let g:vim_markdown_frontmatter = 1
+let g:vim_markdown_strikethrough = 1
+
+" Open links using 'ge' for Markdown files without the '.md' extension
+let g:vim_markdown_no_extensions_in_markdown = 1
+
+" Automatically save when following a link
+let g:vim_markdown_autowrite = 1
+
+" Don't automatically insert bullets or indent list items
+let g:vim_markdown_auto_insert_bullets = 0
+let g:vim_markdown_new_list_item_indent = 0
+
+" Open linked files in new horizontal split
+let g:vim_markdown_edit_url_in = 'hsplit'
+
+" Disable folding in Markdown (seems to be buggy?)
+let g:vim_markdown_folding_disabled = 1
