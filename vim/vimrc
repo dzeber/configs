@@ -266,9 +266,9 @@ command! PdG ! pandoc % -s -f markdown_github -t html -o %:r.html --toc
 " Colour scheme switching
 
 " Save the current session
-execute "command Svs mksession!" s:current_session_path
+execute "command! Svs mksession!" s:current_session_path
 " Load the last saved session
-execute "command Lds source" s:current_session_path
+execute "command! Lds source" s:current_session_path
 
 
 "==========================================================================
@@ -358,7 +358,7 @@ endif
 if has("gui_running")
     if s:on_windows
         call SetFont(s:current_font_win)
-    elif s:on_mac
+    elseif s:on_mac
         call SetFont(s:current_font_mac)
     endif
 endif
