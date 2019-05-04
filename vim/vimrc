@@ -39,8 +39,9 @@ if isdirectory(s:Vundle_path)
     " Let Vundle manage Vundle, required
     Plugin 'VundleVim/Vundle.vim'
 
-    " Extensive selection of color schemes.
-    Plugin 'flazz/vim-colorschemes'
+    "------------------------------
+    " Functionality
+    "------------------------------
 
     " Fuzzy finder.
     Plugin 'ctrlpvim/ctrlp.vim'
@@ -48,8 +49,19 @@ if isdirectory(s:Vundle_path)
     " Plugin to stop accidentally quitting windows.
     Plugin 'Carpetsmoker/confirm_quit.vim'
 
+    "------------------------------
+    " Theming and visual elements
+    "------------------------------
+
+    " Extensive selection of color schemes.
+    Plugin 'flazz/vim-colorschemes'
+
     " Show mark locations on left of window.
     Plugin 'kshenoy/vim-signature'
+
+    "------------------------------
+    " Motions, objects & operators
+    "------------------------------
 
     " Use 's' as a text object for delimiters, 'ss' for linewise
     Plugin 'tpope/vim-surround'
@@ -64,24 +76,35 @@ if isdirectory(s:Vundle_path)
     Plugin 'kana/vim-textobj-user'
 
     " Use 'au'/'iu' as a text object for URLs
-    " Note: for some reason, this needs to be `PluginUpdate`-d manually
-    " before it will work.
     Plugin 'jceb/vim-textobj-uri'
 
     " Use 'av'/'iv' as a text object for words within camelCase/snake_case
-    " Note: for some reason, this needs to be `PluginUpdate`-d manually
-    " before it will work.
     Plugin 'Julian/vim-textobj-variable-segment'
 
     " Use 'ai'/'ii' as a text object for indented blocks,
     " 'aI' for lines above and below.
     Plugin 'michaeljsmith/vim-indent-object'
 
+    " Fix deleting and pasting over text
+    " Use 'gr' to replace a motion or selection with a given register contents
+    Plugin 'vim-scripts/ReplaceWithRegister'
+
+    "------------------------------
+    " File formats
+    "------------------------------
+
+    " Pandoc
+    Plugin 'vim-pandoc/vim-pandoc'
+    Plugin 'vim-pandoc/vim-pandoc-syntax'
+
+    " RMarkdown
+    Plugin 'vim-pandoc/vim-rmarkdown'
+
     " Tabular formatting
     Plugin 'godlygeek/tabular'
 
     " Markdown-specific functionality
-    Plugin 'plasticboy/vim-markdown'
+    "Plugin 'plasticboy/vim-markdown'
 
     call vundle#end()
     filetype plugin indent on
@@ -229,7 +252,7 @@ inoremap <C-_> <lt>-
 
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
-inoremap <C-U> <C-G>u<C-U>
+"inoremap <C-U> <C-G>u<C-U>
 
 " Remap the `W` command to `w` to fix a common typo
 command! W w
@@ -594,26 +617,56 @@ cnoremap <silent> x<CR>  :call confirm_quit#confirm(1, "always")<CR>
 nnoremap <silent> ZZ     :call confirm_quit#confirm(1, "always")<CR>
 
 
-" vim-markdown
-" ------------
+" " vim-markdown
+" " ------------
 
-" Enable additional syntax highlighting
-let g:vim_markdown_math = 1
-let g:vim_markdown_frontmatter = 1
-let g:vim_markdown_strikethrough = 1
+" " Enable additional syntax highlighting
+" let g:vim_markdown_math = 1
+" let g:vim_markdown_frontmatter = 1
+" let g:vim_markdown_strikethrough = 1
 
-" Open links using 'ge' for Markdown files without the '.md' extension
-let g:vim_markdown_no_extensions_in_markdown = 1
+" " Open links using 'ge' for Markdown files without the '.md' extension
+" let g:vim_markdown_no_extensions_in_markdown = 1
 
-" Automatically save when following a link
-let g:vim_markdown_autowrite = 1
+" " Automatically save when following a link
+" let g:vim_markdown_autowrite = 1
 
-" Don't automatically insert bullets or indent list items
-let g:vim_markdown_auto_insert_bullets = 0
-let g:vim_markdown_new_list_item_indent = 0
+" " Don't automatically insert bullets or indent list items
+" let g:vim_markdown_auto_insert_bullets = 0
+" let g:vim_markdown_new_list_item_indent = 0
 
-" Open linked files in new horizontal split
-let g:vim_markdown_edit_url_in = 'hsplit'
+" " Open linked files in new horizontal split
+" let g:vim_markdown_edit_url_in = 'hsplit'
 
-" Disable folding in Markdown (seems to be buggy?)
-let g:vim_markdown_folding_disabled = 1
+" " Disable folding in Markdown (seems to be buggy?)
+" let g:vim_markdown_folding_disabled = 1
+
+
+" vim-pandoc
+" ----------
+
+" Disable some modules
+let g:pandoc#modules#disabled = [
+    \"folding",
+    \"formatting",
+    \"menu",
+    \"spell",
+    \"hypertext",
+\]
+"\"keyboard",
+
+" Keep the keyboard shortcuts, but disable some types of mappings
+let g:pandoc#keyboard#blacklist_submodule_mappings = [
+    \"lists",
+    \"styles",
+\]
+
+
+" vim-pandoc-syntax
+" -----------------
+
+" No concealing
+let g:pandoc#syntax#conceal#use = 0
+" No underlining
+let g:pandoc#syntax#style#underline_special = 1
+
