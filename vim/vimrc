@@ -19,6 +19,7 @@ let s:current_font_mac = "source"
 let s:current_theme_dark = "wombat256mod"
 let s:current_theme_light = "solarized"
 let s:current_theme_term = "wombat256mod"
+let s:current_theme_win = "flatlandia"
 " Whether or not to use the dark theme in GUI.
 let s:use_darktheme = 0
 
@@ -417,7 +418,9 @@ if s:has_colours
 
     " Set current color scheme.
     if has("gui")
-        if s:use_darktheme
+        if s:on_windows
+            call SetDarkTheme(s:current_theme_win)
+        elseif s:use_darktheme
             call SetDarkTheme(s:current_theme_dark)
         else
             call SetLightTheme(s:current_theme_light)
