@@ -60,6 +60,12 @@ if isdirectory(s:Vundle_path)
     " Show mark locations on left of window.
     Plugin 'kshenoy/vim-signature'
 
+    " Distraction-free mode.
+    Plugin 'junegunn/goyo.vim'
+
+    " Dim other than current sections.
+    Plugin 'junegunn/limelight.vim'
+
     "------------------------------
     " Motions, objects & operators
     "------------------------------
@@ -242,6 +248,9 @@ nnoremap <Leader>O O<Esc>
 
 " Toggle relative line numbers
 nnoremap <Leader>l :set relativenumber!<CR>
+
+" Toggle goyo (distraction-free mode)
+nnoremap <Leader>g :Goyo<CR>
 
 " Markdown section header underlines
 nnoremap <Leader>d :s/^#*\s*//<CR>yyp:s/./-/g<CR>
