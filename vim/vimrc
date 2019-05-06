@@ -380,6 +380,7 @@ if s:has_colours
         \"desert",
         \"kalisi",
         \"flatlandia",
+        \"parsec"
     \]
 
     let s:favourite_light_themes = [
