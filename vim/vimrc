@@ -135,6 +135,9 @@ set autoread
 " Allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
+" Make `~` behave like an operator
+set tildeop
+
 " Tabbing: always replace with 4 spaces
 set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 
