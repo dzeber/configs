@@ -16,7 +16,7 @@ let s:on_mac = has("mac") || has("macunix")
 " Current theme settings - see below
 let s:current_font_win = "consolas"
 let s:current_font_mac = "source"
-let s:current_theme_dark = "wombat256mod"
+let s:current_theme_dark = "parsec"
 let s:current_theme_light = "solarized"
 let s:current_theme_term = "wombat256mod"
 let s:current_theme_win = "flatlandia"
@@ -146,6 +146,9 @@ set textwidth=80
 
 " Remove comment leader when joining lines
 set formatoptions+=j
+
+" Don't insert an extra space after '.' when joining lines.
+set nojoinspaces
 
 " " Comment formatting:
 " " Remove 'XCOMM' leader.
