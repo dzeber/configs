@@ -315,6 +315,7 @@ set showbreak=--->
 
 
 "------------------------------
+"
 " Set up functions to set favourite fonts and colorschemes
 "
 
@@ -523,6 +524,45 @@ endfunction
 " Open HTML help
 command! -complete=help -nargs=? Help :call OnlineVimHelp(<f-args>)
 command! -complete=help -nargs=? H :call OnlineVimHelp(<f-args>)
+
+
+" Window resizing
+" ---------------
+
+" Get the available height in Vim window lines for the current GUI window.
+function! GetWinHeightLines()
+    let l:winh = 0
+    " Iterate over windows in the current tab and add up window heights
+    " for all leftmost windows.
+    for l:winnum in range(1, winnr("$"))
+        if win_screenpos(l:winnum)[1] == 1
+            let l:winh += winheight(l:winnum)
+        endif
+    endfor
+    return l:winh
+endfunction
+
+" Compute the number of lines of height represented by the given proportion.
+" If an integer is given, it is interpreted the decimal part of the proportion
+" eg. `9` is interpreted as 0.9.
+function! NumLinesForProp(prop)
+    let l:prop = a:prop
+    if l:prop !~ "\\."
+        " No decimal point. Interpret int as the fractional part.
+        let l:prop = "0." . l:prop
+    elseif l:prop =~ "^\\."
+        " Starts with a decimal point. Add an initial 0.
+        let l:prop = "0" . l:prop
+    endif
+    return str2float(l:prop) * GetWinHeightLines()
+endfunction
+
+
+" Resize window to a proportion of the available height.
+command!
+    \ -nargs=1
+    \ Wr
+    \ :execute "resize " . string(NumLinesForProp(<f-args>))
 
 
 " Automatic session management
