@@ -1,0 +1,109 @@
+<!-- Customized Preview formatting for JabRef entries. -->
+<font face="avenir" size=3>
+  <!-- The handle to use as the filename: [authors]_[year]_[title] -->
+  <code><font size=4>
+    <!--
+      Authors: at most two authors' last names, separated by dashes
+      Title:
+        - remove all HTML special characters   
+        - abbreviate 'Differential Privacy' or 'Differentially Private' with
+          'DP'
+      Because these regexes are parsed inside Latex-like syntax, can't use '[]'
+      for character classes. Also, it's not clear in what order the
+      replacements are applied. Want to remove all non-word characters, but use
+      '-' to separate words. As a hack, replace whitespace with 'ZZZ' and
+      change it to '-' after stripping other special characters.
+    -->
+    \format[
+      Authors(2,LastName, NoPunc, Sep=-, LastSep=-, EtAl=-et-al), ToLowerCase
+    ]{\author}&#95;\year&#95;\format[
+      HTMLChars, ToLowerCase, Replace(&.+?;,), Replace(\s,ZZZ), Replace(\W,), Replace(ZZZ,-), Replace(differentially-private|differential-privacy,dp))
+    ]{\title}
+  </font></code>
+  <br>
+  <!--
+    A short version of the entry, which can be copied into notes docs:
+    [authors], [year]: [title] [[key]]
+  -->
+  <b>
+    \format[Authors(2,LastName, Amp, Amp)]{\author},
+    \year:
+    \format[HTMLChars]{\title}
+  </b>
+    <code><font size=4>[\bibtexkey]</font></code>
+  <br>
+  \begin{notes}
+    <br>
+    \notes
+    <br>
+  \end{notes}
+  \begin{keywords}
+    <br>
+    <b>Keywords:</b>
+    \keywords
+  \end{keywords}
+  \begin{tags}
+    <br>
+    <b>Tags:</b>
+    <i>\tags</i>
+    <br>
+  \end{tags}
+  <br>
+  <!-- The detailed entry information -->
+  <code><font size=4> 
+    \begin{bibtexkey}
+      \bibtexkey
+    \end{bibtexkey}
+  </font></code>
+  (\bibtextype)
+  <br>
+  \begin{author}
+    \format[Authors(LastFirst,Initials,Amp),HTMLChars]{\author}
+    <br>
+  \end{author}
+  \begin{editor}
+    \format[Authors(LastFirst,Initials,Amp),HTMLChars]{\editor}
+    <i>(\format[IfPlural(Eds.,Ed.)]{\editor})</i>
+    <br>
+  \end{editor}
+  \begin{title}
+    \format[HTMLChars]{\title}
+  \end{title}
+  <br>
+  \begin{chapter}
+    \format[HTMLChars]{\chapter}
+    <br>
+  \end{chapter}
+  \begin{journal}
+    <em>\format[HTMLChars]{\journal},</em>
+  \end{journal}
+  \begin{booktitle}
+    <em>\format[HTMLChars]{\booktitle},</em>
+  \end{booktitle}
+  \begin{school}
+    <em>\format[HTMLChars]{\school},</em>
+  \end{school}
+  \begin{institution}
+    <em>\format[HTMLChars]{\institution},</em>
+  \end{institution}
+  \begin{publisher}
+    <em>\format[HTMLChars]{\publisher},</em>
+  \end{publisher}
+  \begin{year}
+    <b>\year</b>
+  \end{year}\begin{volume}
+    <i>, \volume</i>
+  \end{volume}\begin{pages}
+    , \format[FormatPagesForHTML]{\pages}
+  \end{pages}
+  \begin{abstract}
+    <br><br>
+    <b>Abstract: </b>
+    \format[HTMLChars]{\abstract}
+  \end{abstract}
+  \begin{review}
+    <br><br>
+    <b>Review: </b>
+    \format[HTMLChars]{\review}
+  \end{review}
+</font>
