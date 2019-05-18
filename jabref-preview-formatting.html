@@ -1,26 +1,5 @@
 <!-- Customized Preview formatting for JabRef entries. -->
 <font face="avenir" size=3>
-  <!-- The handle to use as the filename: [authors]_[year]_[title] -->
-  <code><font size=4>
-    <!--
-      Authors: at most two authors' last names, separated by dashes
-      Title:
-        - remove all HTML special characters   
-        - abbreviate 'Differential Privacy' or 'Differentially Private' with
-          'DP'
-      Because these regexes are parsed inside Latex-like syntax, can't use '[]'
-      for character classes. Also, it's not clear in what order the
-      replacements are applied. Want to remove all non-word characters, but use
-      '-' to separate words. As a hack, replace whitespace with 'ZZZ' and
-      change it to '-' after stripping other special characters.
-    -->
-    \format[
-      Authors(2,LastName, NoPunc, Sep=-, LastSep=-, EtAl=-et-al), ToLowerCase
-    ]{\author}&#95;\year&#95;\format[
-      HTMLChars, ToLowerCase, Replace(&.+?;,), Replace(\s,ZZZ), Replace(\W,), Replace(ZZZ,-), Replace(differentially-private|differential-privacy,dp))
-    ]{\title}
-  </font></code>
-  <br>
   <!--
     A short version of the entry, which can be copied into notes docs:
     [authors], [year]: [title] [[key]]
@@ -32,6 +11,14 @@
   </b>
     <code><font size=4>[\bibtexkey]</font></code>
   <br>
+  <!-- The file name. -->
+  \begin{file}
+  <br>
+  <code><font size=4>
+    \format[FileLink(pdf), Replace(\.pdf$,)]{\file}
+  </font></code>
+  <br>
+  \end{file}
   \begin{notes}
     <br>
     \notes
@@ -106,4 +93,25 @@
     <b>Review: </b>
     \format[HTMLChars]{\review}
   \end{review}
+  <br><br>
+  <!-- The handle to use as the filename: [authors]_[year]_[title] -->
+  <code><font size=4>
+    <!--
+      Authors: at most two authors' last names, separated by dashes
+      Title:
+        - remove all HTML special characters
+        - abbreviate 'Differential Privacy' or 'Differentially Private' with
+          'DP'
+      Because these regexes are parsed inside Latex-like syntax, can't use '[]'
+      for character classes. Also, it's not clear in what order the
+      replacements are applied. Want to remove all non-word characters, but use
+      '-' to separate words. As a hack, replace whitespace with 'ZZZ' and
+      change it to '-' after stripping other special characters.
+    -->
+    \format[
+      Authors(2,LastName, NoPunc, Sep=-, LastSep=-, EtAl=-et-al), ToLowerCase
+    ]{\author}&#95;\year&#95;\format[
+      HTMLChars, ToLowerCase, Replace(&.+?;,), Replace(\s,ZZZ), Replace(\W,), Replace(ZZZ,-), Replace(differentially-private|differential-privacy,dp))
+    ]{\title}
+  </font></code>
 </font>
