@@ -192,6 +192,9 @@ set switchbuf=useopen
 set splitbelow
 set splitright
 
+" Don't automatically equalize window splits
+set noequalalways
+
 " No backup files.
 set nobackup
 set nowritebackup
