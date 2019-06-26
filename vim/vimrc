@@ -215,6 +215,12 @@ set incsearch
 " case-sensitive only if search term includes an uppercase letter
 set ignorecase smartcase
 
+" augroup inscompletion
+"     autocmd!
+"     autocmd MenuPopup i set noignorecase
+"     autocmd CompleteDone * set ignorecase
+" augroup END
+
 " Put these in an autocmd group, so that we can delete them easily.
 augroup vimrcEx
   autocmd!
@@ -732,3 +738,13 @@ let g:pandoc#syntax#conceal#use = 0
 " No underlining
 let g:pandoc#syntax#style#underline_special = 1
 
+" Enable syntax highlighting for code blocks within Markdown.
+let g:pandoc#syntax#codeblocks#embeds#use = 1
+" Recognized languages need to be specified explicitly.
+let g:pandoc#syntax#codeblocks#embeds#langs = [
+    \"bash=sh", "json", "makefile=make", "xml", "yaml",
+    \"html", "css", "javascript",
+    \"c", "cpp", "java", "scala",
+    \"latex=tex", "bibtex=bib",
+    \"r", "python", "sql"
+\]
