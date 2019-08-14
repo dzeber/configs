@@ -50,8 +50,8 @@ AWS_COMP="$(command -v aws_completer)"
 # Completion for pip, if installed.
 # Make sure to cover both Python 2 and Python 3
 command -v pip > /dev/null && eval "$(pip completion --bash)"
-command -v pip2 > /dev/null && eval "$(pip2 completion --bash)"
-command -v pip3 > /dev/null && eval "$(pip3 completion --bash)"
+# command -v pip2 > /dev/null && eval "$(pip2 completion --bash)"
+# command -v pip3 > /dev/null && eval "$(pip3 completion --bash)"
 
 unset BASH_COMP BASH_COMP_2 AWS_COMP
 

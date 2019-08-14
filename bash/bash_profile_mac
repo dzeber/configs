@@ -21,7 +21,8 @@ export HOST_NICKNAME="mac"
 # Identify the git dir containing these bash scripts.
 THIS_PATH=$(realpath -e "${BASH_SOURCE[0]}")
 THIS_DIR="$(cd "$(dirname "$THIS_PATH")" && pwd)"
-. "$THIS_DIR/bash_profile" --moz_profile --mozaws
+#. "$THIS_DIR/bash_profile" --moz_profile --mozaws
+. "$THIS_DIR/bash_profile" --moz_profile
 
 # Setting PATH for Python 3.5
 # The original version is saved in .bash_profile.pysave

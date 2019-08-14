@@ -7,7 +7,7 @@
 
 
 # Our LDAP-protected web server.
-export WWW_SERVER="dashboard1"
+# export WWW_SERVER="dashboard1"
 # The www dir for hosting files behind LDAP.
 export WWW_BASEDIR="/data/www/metrics.mozilla.com/protected/dzeber"
 
@@ -26,38 +26,38 @@ export S3_HOME="s3://mozilla-metrics/user/dzeber"
 # Copy a file to the web server, and make it visible.
 # Usage: publish_www <file> <server_dir>
 # <server_dir> is optional, defaults to "tmp".
-publish_www () {
-    if [[ "$#" == 0 ]]; then
-        local MSG="\nUsage: publish_www <local file> <server dir>"
-        MSG="$MSG\n    <local file>: the file to publish to the web server"
-        MSG="$MSG\n    <server dir>: the path on the web server to serve the file from"
-        MSG="$MSG\n                  (relative to the base dir $WWW_BASEDIR/)."
-        MSG="$MSG\n                  Optional; defaults to 'tmp'."
-        echo -e "$MSG" 1>&2
-        return 1
-    fi
+# publish_www () {
+#     if [[ "$#" == 0 ]]; then
+#         local MSG="\nUsage: publish_www <local file> <server dir>"
+#         MSG="$MSG\n    <local file>: the file to publish to the web server"
+#         MSG="$MSG\n    <server dir>: the path on the web server to serve the file from"
+#         MSG="$MSG\n                  (relative to the base dir $WWW_BASEDIR/)."
+#         MSG="$MSG\n                  Optional; defaults to 'tmp'."
+#         echo -e "$MSG" 1>&2
+#         return 1
+#     fi
 
-    # The path to the web dir on the web server.
-    # Default to the 'tmp' subdir.
-    local LOCAL_FILENAME="$(basename "$1")"
-    local TARGET_DIR="$WWW_BASEDIR/${2:-tmp}"
-    local TARGET_FILE="$TARGET_DIR/$LOCAL_FILENAME"
+#     # The path to the web dir on the web server.
+#     # Default to the 'tmp' subdir.
+#     local LOCAL_FILENAME="$(basename "$1")"
+#     local TARGET_DIR="$WWW_BASEDIR/${2:-tmp}"
+#     local TARGET_FILE="$TARGET_DIR/$LOCAL_FILENAME"
 
-    # Copy the file.
-    scp "$1" "$WWW_SERVER:$TARGET_DIR"
-    # If copying failed, could be because the VPN was not connected.
-    if [[ "$?" != 0 ]]; then
-        echo "Copying failed. Is the VPN connected?" 1>&2
-        return 1
-    fi
-    echo "$LOCAL_FILENAME was copied to $TARGET_DIR"
+#     # Copy the file.
+#     scp "$1" "$WWW_SERVER:$TARGET_DIR"
+#     # If copying failed, could be because the VPN was not connected.
+#     if [[ "$?" != 0 ]]; then
+#         echo "Copying failed. Is the VPN connected?" 1>&2
+#         return 1
+#     fi
+#     echo "$LOCAL_FILENAME was copied to $TARGET_DIR"
 
-    # Check the permissions on the copied file.
-    local STAT_CMD="stat -c \"%a\" $TARGET_FILE"
-    local PERMS_ON_SERVER="$(ssh dashboard1 "$STAT_CMD")"
-    if [[ "$PERMS_ON_SERVER" != "644"  ]]; then
-        ssh dashboard1 "chmod 644 $TARGET_FILE"
-        echo "Permissions updated."
-    fi
-}
+#     # Check the permissions on the copied file.
+#     local STAT_CMD="stat -c \"%a\" $TARGET_FILE"
+#     local PERMS_ON_SERVER="$(ssh dashboard1 "$STAT_CMD")"
+#     if [[ "$PERMS_ON_SERVER" != "644"  ]]; then
+#         ssh dashboard1 "chmod 644 $TARGET_FILE"
+#         echo "Permissions updated."
+#     fi
+# }
 
