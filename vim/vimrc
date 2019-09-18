@@ -113,6 +113,9 @@ if isdirectory(s:Vundle_path)
     " Markdown-specific functionality
     "Plugin 'plasticboy/vim-markdown'
 
+    " Tmux
+    Plugin 'tmux-plugins/vim-tmux'
+
     call vundle#end()
     filetype plugin indent on
 endif
