@@ -22,6 +22,44 @@ export S3_METADATA="s3://net-mozaws-prod-us-west-2-pipeline-metadata"
 # "Home dir" in Metrics bucket.
 export S3_HOME="s3://mozilla-metrics/user/dzeber"
 
+# Git repo management.
+#
+# Some files/dirs should be available to a Git repo but not committed,
+# eg. large data files or custom output.
+# Instead, these are stored in Google Drive.
+
+# The base dir where git repos are cloned to
+export USERPROF_GIT_DIR="$HOME/git"
+# The base dir where repo-specific files are stored in Google Drive.
+# Subdirs follow the same structure as the corresponding repo dir under
+# `$USERPROF_GIT_DIR`, eg. `my-repo/data`.
+export USERPROF_REPOFILES_DIR="$HOME/Google Drive/repofiles"
+
+# Return the corresponding repofiles storage dir for the current repo dir.
+# This should be run from inside a git repo.
+get_repofiles_currdir () {
+    local CURR_DIR="$(realpath .)"
+    local GIT_BASE="$USERPROF_GIT_DIR/"
+    # Only continue if the current dir is in a git repo.
+    [[ "${CURR_DIR:0:${#GIT_BASE}}" != "$GIT_BASE" ]] && return 1
+
+    echo "$USERPROF_REPOFILES_DIR/$(realpath --relative-to $USERPROF_GIT_DIR .)"
+}
+
+# Create a dir inside the base repofiles storage dir, and symlink it into
+# the current dir (expected to be inside the repo).
+# Fails if run from outside a git repo.
+# Usage: `make_repofiles_dir <mydir>`
+make_repofiles_dir () {
+    local REPOFILES_BASE_DIR="$(get_repofiles_currdir)"
+    # Only continue if the current dir is in a git repo.
+    [[ -z "$REPOFILES_BASE_DIR" ]] && return 1
+
+    local REPOFILES_DIR="$REPOFILES_BASE_DIR/$1"
+    mkdir -p "$REPOFILES_DIR"
+    ln -s "$REPOFILES_DIR"
+}
+
 
 # Copy a file to the web server, and make it visible.
 # Usage: publish_www <file> <server_dir>
