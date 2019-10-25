@@ -102,11 +102,14 @@ alias ls='ls --color=auto'
 alias la='ls -A --group-directories-first'
 # Customized long form.
 alias ll='ls -lAh'
+alias lld='ll --group-directories-first'
 
 # Tree view
 TREE_EXCLUDE=".git"
 alias lst='tree -alAC -I "$TREE_EXCLUDE"'
 
+# Print shell and environment variables (excluding functions)
+alias printvars='(set -o posix; set)'
 
 # Always use Vim (for cases where applications default to opening vi).
 alias vi='vim'
@@ -118,6 +121,10 @@ alias rmd='render_rmd'
 alias virtualenv='virtualenv -p python'
 alias virtualenv2='virtualenv -p python2'
 alias virtualenv3='virtualenv -p python3'
+# Install a new IPython kernel.
+# Run inside an activated virtual env to use Juypter.
+# Usage: `make_kernel <name>`
+alias make_kernel='python -m ipykernel install --user --name'
 
 # R
 #alias R='R --no-save'
