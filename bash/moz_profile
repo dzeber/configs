@@ -60,6 +60,51 @@ make_repofiles_dir () {
     ln -s "$REPOFILES_DIR"
 }
 
+# Standard notes file template.
+export USERPROF_NOTES_TEMPLATE="$THIS_DIR/notes.md"
+
+# Create a notes file stub.
+# Usage: make_notes_file [-t <title>] [<path>]
+make_notes_file () {
+    local TITLE
+    local FILENAME
+    local STARTING_DIR="$(pwd)"
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+            -t|--title)
+                shift
+                TITLE="$1"
+                ;;
+            *)
+                local FILE_ARG="$1"
+                if [[ -d "$FILE_ARG" ]]; then
+                    # Arg is an existing directory.
+                    # File will be created there.
+                    cd "$FILE_ARG"
+                else
+                    # Arg is the desired file path.
+                    cd "$(dirname "$FILE_ARG")"
+                    FILENAME="$(basename "$FILE_ARG")"
+                fi
+                ;;
+        esac
+        shift
+    done
+    # Default title is the containing dir name.
+    [[ -z "$TITLE" ]] && TITLE="$(basename "$(pwd)")"
+    # Default file name is that of the template file.
+    [[ -z "$FILENAME" ]] && FILENAME="$(basename "$USERPROF_NOTES_TEMPLATE")"
+
+    # Human-readable date string. Drop initial padding.
+    local DATESTR=$(date '+%e %B %Y' | sed 's/^ //')
+    cat "$USERPROF_NOTES_TEMPLATE" \
+        | sed "s/__TITLE__/$TITLE/" \
+        | sed "s/__DATE__/$DATESTR/" \
+        > "$FILENAME"
+
+    cd "$STARTING_DIR"
+}
+
 
 # Copy a file to the web server, and make it visible.
 # Usage: publish_www <file> <server_dir>
