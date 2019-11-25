@@ -108,11 +108,21 @@ alias lld='ll --group-directories-first'
 TREE_EXCLUDE=".git"
 alias lst='tree -alAC -I "$TREE_EXCLUDE"'
 
+# Print path elements on separate lines
+alias path='echo $PATH | tr -s ":" "\n"'
+
 # Print shell and environment variables (excluding functions)
-alias printvars='(set -o posix; set)'
+alias vars='(set -o posix; set)'
 
 # Always use Vim (for cases where applications default to opening vi).
 alias vi='vim'
+
+# Git commands
+alias gst='git status'
+alias galias='git config --list |
+    grep "alias" |
+    sed "s/^alias\.//" |
+    sed "s/=/ = /"'
 
 # Rmarkdown rendering.
 alias rmd='render_rmd'
@@ -135,6 +145,27 @@ alias make_kernel='python -m ipykernel install --user --name'
 # Functions
 # ---------
 #
+
+# Check out a pull request as a local branch.
+# Usage: git_checkout_pr <N> (the PR ID)
+# Creates a local branch 'pull_<N>' and switches to it
+git_checkout_pr () {
+    local REMOTE_REF="pull/$1/head"
+    local LOCAL_BRANCH="pull_$1"
+    git fetch origin "$REMOTE_REF:$LOCAL_BRANCH"
+    git checkout "$LOCAL_BRANCH"
+}
+
+# print_vars () {
+#     local VAR
+#     for VAR in "$(vars)"; do
+#         echo "$VAR"
+#         echo ""
+#         # tput setaf 14 && echo -n "$(echo "$VAR" | sed 's/\(^[^=]*\).*/\1/')"
+#         # tput setaf 11 && echo -n "="
+#         # tput sgr0 && echo "$VAR" | sed 's/^[^=]*=//'
+#     done
+# }
 
 # Render an Rmarkdown file to HTML.
 render_rmd () {
