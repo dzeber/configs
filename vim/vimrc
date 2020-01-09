@@ -244,8 +244,10 @@ augroup END
 " Mappings
 "
 
-" Use the default mapleader
+" Use a custom mapleader
 let mapleader = " "
+" Set maplocalleader for use with vim-pandoc shortcuts
+let maplocalleader = "\\"
 
 " <Ctrl-Space> to autocomplete from words in file
 inoremap <C-Space> <C-x><C-n>
@@ -269,6 +271,13 @@ nnoremap <Leader>l :set relativenumber!<CR>
 
 " Toggle goyo (distraction-free mode)
 nnoremap <Leader>g :Goyo<CR>
+
+" Section movement in Markdown (with vim-pandoc):
+" Jump to parent header (can use '[[' to jump to current header)
+nnoremap [p :call pandoc#keyboard#sections#CurrentHeaderParent()<CR>
+" Move between sibling headers
+nnoremap <Leader>]] :call pandoc#keyboard#sections#NextSiblingHeader()<CR>
+nnoremap <Leader>[[ :call pandoc#keyboard#sections#PrevSiblingHeader()<CR>
 
 " Markdown section header underlines
 nnoremap <Leader>d :s/^#*\s*//<CR>yyp:s/./-/g<CR>
