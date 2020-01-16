@@ -352,6 +352,7 @@ if has("gui")
         \"source": "SourceCodePro-Regular:h14",
         \"monaco": "Monaco:h13",
         \"inconsolata": "Inconsolata:h15",
+        \"writing": "AnonymousPro:h15",
     \}
 
     function! ListFavouriteFonts()
@@ -508,6 +509,30 @@ endif
 "
 " Other
 "
+
+" Plaintext mode
+" --------------
+
+" Adjust some settings for more standard plaintext editing
+function! SetWriting()
+    setlocal noexpandtab
+    setlocal textwidth=0
+    setlocal nonumber
+    setlocal showbreak=
+    call SetFont("writing")
+endfunction
+
+function! SetNoWriting()
+    setlocal expandtab
+    setlocal textwidth=80
+    setlocal number
+    setlocal showbreak=--->
+    call SetFont("source")
+endfunction
+
+command SetWriting :call SetWriting()
+command SetNoWriting :call SetNoWriting()
+
 
 " Open online help
 " ----------------
