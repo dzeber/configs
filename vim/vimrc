@@ -519,7 +519,7 @@ function! SetWriting()
     setlocal textwidth=0
     setlocal nonumber
     setlocal showbreak=
-    call SetFont("writing")
+    "call SetFont("writing")
 endfunction
 
 function! SetNoWriting()
@@ -527,7 +527,7 @@ function! SetNoWriting()
     setlocal textwidth=80
     setlocal number
     setlocal showbreak=--->
-    call SetFont("source")
+    "call SetFont("source")
 endfunction
 
 command SetWriting :call SetWriting()
