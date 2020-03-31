@@ -16,6 +16,11 @@ export PATH="/usr/local/opt/python/libexec/bin:$PATH"
 
 # Custom hostname to display in prompt.
 export HOST_NICKNAME="mac"
+# Set Java home to 1.8 version (mainly required for Spark).
+JAVA_HOME_UTIL="/usr/libexec/java_home"
+if [[ -x "$JAVA_HOME_UTIL" ]]; then
+    export JAVA_HOME="$(eval "$JAVA_HOME_UTIL -v1.8")"
+fi
 
 # Run general config.
 # Identify the git dir containing these bash scripts.
@@ -23,6 +28,8 @@ THIS_PATH=$(realpath -e "${BASH_SOURCE[0]}")
 THIS_DIR="$(cd "$(dirname "$THIS_PATH")" && pwd)"
 #. "$THIS_DIR/bash_profile" --moz_profile --mozaws
 . "$THIS_DIR/bash_profile" --moz_profile
+
+unset THIS_PATH THIS_DIR JAVA_HOME_UTIL
 
 # Setting PATH for Python 3.5
 # The original version is saved in .bash_profile.pysave
