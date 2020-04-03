@@ -255,6 +255,9 @@ inoremap <C-Space> <C-x><C-n>
 " <Shift-Enter> to return to normal mode
 noremap <S-CR> <Esc>
 
+" Remove mapping to avoid unintentionally closing windows
+nmap <C-W>o <Nop>
+
 " System copy/paste shortcuts
 vnoremap <Leader>y "+y
 nnoremap <Leader>p "+p
