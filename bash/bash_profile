@@ -127,6 +127,7 @@ alias galias='git config --list |
 # Rmarkdown rendering.
 alias rmd='render_rmd'
 
+# Python tools
 # virtualenv for specific Python versions.
 alias virtualenv='virtualenv -p python'
 alias virtualenv2='virtualenv -p python2'
@@ -135,12 +136,14 @@ alias virtualenv3='virtualenv -p python3'
 # Run inside an activated virtual env to use Juypter.
 # Usage: `make_kernel <name>`
 alias make_kernel='python -m ipykernel install --user --name'
+# Setting line length for black
+alias black='black -l 79'
+# Jupyter
+alias jnb='conda activate base; jupyter notebook --no-browser --port'
 
 # R
 #alias R='R --no-save'
 
-# Jupyter
-alias jnb='conda activate base; jupyter notebook --no-browser --port'
 
 
 #-----------------------------------------------------------------------------
