@@ -139,6 +139,9 @@ alias make_kernel='python -m ipykernel install --user --name'
 # R
 #alias R='R --no-save'
 
+# Jupyter
+alias jnb='conda activate base; jupyter notebook --no-browser --port'
+
 
 #-----------------------------------------------------------------------------
 #
