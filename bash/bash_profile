@@ -138,8 +138,12 @@ alias virtualenv3='virtualenv -p python3'
 alias make_kernel='python -m ipykernel install --user --name'
 # Setting line length for black
 alias black='black -l 79'
-# Jupyter
-alias jnb='conda activate base; jupyter notebook --no-browser --port'
+# Make sure Jupyter runs from the base conda env so that other conda envs
+# will be available as kernels (extension is installed to make this possible).
+# If a different conda env is already active, this doesn't change it.
+alias ensure_conda='[[ -z "$CONDA_DEFAULT_ENV" ]] && conda activate base'
+alias jupyter='ensure_conda; jupyter'
+alias jnb='start_jupyter_server'
 
 # R
 #alias R='R --no-save'
@@ -176,6 +180,30 @@ git_checkout_pr () {
 # Render an Rmarkdown file to HTML.
 render_rmd () {
     Rscript --vanilla -e "rmarkdown::render('$1')"
+}
+
+# Start a Jupyter server at a specific port.
+# If not specified, try to detect from the current tmux window name
+# (assumes the name is of the form 'jupyter:<port>').
+start_jupyter_server () {
+    local port="$1"
+    local win_name
+    if [[ -z "$port" && -n "$TMUX" ]]; then
+        # No port specified and we are in an attached tmux session.
+        # Try to parse port number from the current tmux window name.
+        win_name="$(tmux display-message -p '#W' | grep 'jupyter:\d\+')"
+        if [[ -n "$win_name" ]]; then
+            # Window name is of the form 'jupyter:<port>'.
+            port="$(echo "$win_name" | sed 's/jupyter://')"
+        fi
+    fi
+    if [[ -z "$port" ]]; then
+        # If the port could not be detected automatically, nothing else to do.
+        echo "No port specified for Jupyter server"
+        return 1
+    fi
+
+    jupyter notebook --no-browser --port "$port"
 }
 
 
