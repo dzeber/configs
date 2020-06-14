@@ -19,7 +19,7 @@ let s:current_font_mac = "source"
 let s:current_theme_dark = "parsec"
 let s:current_theme_light = "solarized"
 let s:current_theme_term = "wombat256mod"
-let s:current_theme_win = "flatlandia"
+let s:current_theme_win = "seoul256"
 " Whether or not to use the dark theme in GUI.
 let s:use_darktheme = 0
 
@@ -773,9 +773,29 @@ let g:pandoc#keyboard#blacklist_submodule_mappings = [
 " vim-pandoc-syntax
 " -----------------
 
-" No concealing
-let g:pandoc#syntax#conceal#use = 0
-" No underlining
+" Allow very limited concealing: bold/italic, escaped dollar signs
+let g:pandoc#syntax#conceal#use = 1
+let g:pandoc#syntax#conceal#blacklist = [
+    \"titleblock ",
+    \"image",
+    \"subscript",
+    \"superscript",
+    \"strikeout",
+    \"atx",
+    \"codeblock_start",
+    \"codeblock_delim",
+    \"footnote",
+    \"definition",
+    \"list",
+    \"newline",
+    \"dashes",
+    \"ellipses",
+    \"quotes",
+    \"inlinecode"
+\]
+
+" Allow underlining of certain syntax types
+" (superscript/subscript/strikethrough).
 let g:pandoc#syntax#style#underline_special = 1
 
 " Enable syntax highlighting for code blocks within Markdown.
