@@ -105,7 +105,7 @@ alias ll='ls -lAh'
 alias lld='ll --group-directories-first'
 
 # Tree view
-TREE_EXCLUDE=".git"
+TREE_EXCLUDE='__pycache__|.ipynb_checkpoints|*.pyc|*.git|*.egg*'
 alias lst='tree -alAC -I "$TREE_EXCLUDE"'
 
 # Print path elements on separate lines
