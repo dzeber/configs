@@ -36,8 +36,11 @@ done
 # Try looking for newer version first.
 BASH_COMP="/usr/local/etc/bash_completion"
 BASH_COMP_2="/usr/local/share/bash-completion/bash_completion"
+BASH_COMP_M1="/opt/homebrew/etc/profile.d/bash_completion.sh"
 
-if [[ -r "$BASH_COMP_2" ]]; then
+if [[ -r "$BASH_COMP_M1" ]]; then
+    . "$BASH_COMP_M1"
+elif [[ -r "$BASH_COMP_2" ]]; then
     . "$BASH_COMP_2"
 elif [[ -r "$BASH_COMP" ]]; then
     . "$BASH_COMP"
