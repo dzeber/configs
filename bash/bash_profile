@@ -209,6 +209,31 @@ start_jupyter_server () {
     jupyter notebook --no-browser --port "$port"
 }
 
+# Run Python tool to display BibTeX entries.
+bib_unique_vals () {
+    local THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local SCRIPT_FILE="$THIS_DIR/../tools/bib_unique_vals.py"
+    local SCRIPT_CONDA_ENV="bibtex"
+
+    if [[ ! -r "$SCRIPT_FILE" ]]; then
+        echo "Could not find Python script"
+        return 1
+    fi
+    local CURRENT_CONDA_ENV="$CONDA_DEFAULT_ENV"
+    conda activate "$SCRIPT_CONDA_ENV"
+    python "$SCRIPT_FILE" "$@"
+    if [[ -n "$CURRENT_CONDA_ENV" ]]; then
+        # Return to original conda env
+        conda activate "$CURRENT_CONDA_ENV"
+    else
+        # Conda wasn't active.
+        # Call `deactivate` twice (first reverts to base env).
+        conda deactivate
+        conda deactivate
+    fi
+}
+
+
 
 #-----------------------------------------------------------------------------
 #
