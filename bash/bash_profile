@@ -56,7 +56,14 @@ command -v pip > /dev/null && eval "$(pip completion --bash)"
 # command -v pip2 > /dev/null && eval "$(pip2 completion --bash)"
 # command -v pip3 > /dev/null && eval "$(pip3 completion --bash)"
 
-unset BASH_COMP BASH_COMP_2 AWS_COMP
+# Advanced completion for tmux. Needs to be downloaded first from
+# https://github.com/imomaliev/tmux-bash-completion
+TMUX_COMP="~/.tmux/tmux-bash-completion/completions/tmux"
+if [[ -r "$TMUX_COMP" ]]; then
+    . "$TMUX_COMP"
+fi
+
+unset BASH_COMP BASH_COMP_2 AWS_COMP TMUX_COMP
 
 
 #-----------------------------------------------------------------------------
