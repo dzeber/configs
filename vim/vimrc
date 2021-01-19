@@ -153,7 +153,11 @@ set formatoptions+=j
 " Don't insert an extra space after '.' when joining lines.
 set nojoinspaces
 
-" " Comment formatting:
+" Comment formatting:
+" Make '*' a first-line comment leader by default, eg. for Markdown lists.
+" C-style middle comment leader still gets added after a starting leader.
+set comments^=fb:*
+
 " " Remove 'XCOMM' leader.
 " set comments-=:XCOMM
 " " Add comment leaders for VimScript, SQL.
