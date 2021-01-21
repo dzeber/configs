@@ -144,8 +144,9 @@ set backspace=indent,eol,start
 " Tabbing: always replace with 4 spaces
 set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 
-" Hard wrap lines at 80 characters.
-set textwidth=80
+" Hard wrap lines
+let s:textwidth = 80
+let &textwidth=s:textwidth
 
 " Remove comment leader when joining lines
 set formatoptions+=j
@@ -531,14 +532,14 @@ endfunction
 
 function! SetNoWriting()
     setlocal expandtab
-    setlocal textwidth=80
+    let &l:textwidth=s:textwidth
     setlocal number
     setlocal showbreak=--->
     "call SetFont("source")
 endfunction
 
-command SetWriting :call SetWriting()
-command SetNoWriting :call SetNoWriting()
+command! SetWriting :call SetWriting()
+command! SetNoWriting :call SetNoWriting()
 
 
 " Open online help
