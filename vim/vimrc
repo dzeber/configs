@@ -50,6 +50,9 @@ if isdirectory(s:Vundle_path)
     " Plugin to stop accidentally quitting windows.
     "Plugin 'Carpetsmoker/confirm_quit.vim'
 
+    " Improvements to netrw.
+    Plugin 'tpope/vim-vinegar'
+
     "------------------------------
     " Theming and visual elements
     "------------------------------
@@ -682,6 +685,15 @@ command!
 "
 " Plugin settings
 "
+
+" netrw
+" -----
+
+" Disable the banner
+let g:netrw_banner = 0
+
+" Use tree-style display
+let g:netrw_liststyle = 3
 
 " ctrlp
 " -----
