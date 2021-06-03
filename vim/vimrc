@@ -60,6 +60,12 @@ if isdirectory(s:Vundle_path)
     " Extensive selection of color schemes.
     Plugin 'flazz/vim-colorschemes'
 
+    " lucius light theme is not working in vim-colorschemes: install separately.
+    " This also adds commands to change between the themes:
+    " `:colorscheme lucius`
+    " `:LuciusLight`
+    Plugin 'jonathanfilip/vim-lucius'
+
     " Show mark locations on left of window.
     Plugin 'kshenoy/vim-signature'
 
