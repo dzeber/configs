@@ -252,6 +252,9 @@ augroup vimrcEx
     \ endif
 augroup END
 
+" Session saving: also include app window size and position
+set sessionoptions+=resize,winpos
+
 
 "==========================================================================
 "
