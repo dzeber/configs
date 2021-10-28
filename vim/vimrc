@@ -17,7 +17,7 @@ let s:on_mac = has("mac") || has("macunix")
 let s:current_font_win = "consolas"
 let s:current_font_mac = "source"
 let s:current_theme_dark = "parsec"
-let s:current_theme_light = "solarized"
+let s:current_theme_light = "seoul256-light"
 let s:current_theme_term = "wombat256mod"
 let s:current_theme_win = "seoul256"
 " Whether or not to use the dark theme in GUI.
@@ -326,6 +326,12 @@ command! PdG ! pandoc % -s -f markdown_github -t html -o %:r.html --toc
 execute "command! Svs mksession!" s:current_session_path
 " Load the last saved session
 execute "command! Lds source" s:current_session_path
+
+" Abbreviations
+iabbrev <expr> dy strftime("%d %b %Y")
+iabbrev <expr> dm substitute(strftime("%d/%m %a"), "/0", "/", "")
+iabbrev <expr> dd strftime("%a %d %b")
+iabbrev \- ------------------------------
 
 
 "==========================================================================
