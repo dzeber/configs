@@ -328,9 +328,11 @@ execute "command! Svs mksession!" s:current_session_path
 execute "command! Lds source" s:current_session_path
 
 " Abbreviations
-iabbrev <expr> dy strftime("%d %b %Y")
-iabbrev <expr> dm substitute(strftime("%d/%m %a"), "/0", "/", "")
-iabbrev <expr> dd strftime("%a %d %b")
+" Current date in different formats
+iabbrev <expr> dy substitute(strftime("%d %b %Y"), "^0", "", "")
+iabbrev <expr> dm substitute(substitute(strftime("%d/%m %a"), "^0", "", ""), "/0", "/", "")
+iabbrev <expr> dd substitute(strftime("%a %d %b"), " 0", " ", "")
+" Dividing line
 iabbrev \- ------------------------------
 
 
