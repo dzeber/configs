@@ -75,6 +75,9 @@ if isdirectory(s:Vundle_path)
     " Dim other than current sections.
     Plugin 'junegunn/limelight.vim'
 
+    " Syntax highlighting for Jinja.
+    Plugin 'Glench/Vim-Jinja2-Syntax'
+
     "------------------------------
     " Motions, objects & operators
     "------------------------------
