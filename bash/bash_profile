@@ -63,6 +63,13 @@ if [[ -r "$TMUX_COMP" ]]; then
     . "$TMUX_COMP"
 fi
 
+# Completion for Google Cloud SDK (should have been installed with Homebrew)
+if [[ -n "$(command -v brew)" ]]; then
+    GCLOUD_COMP="$(brew --caskroom)/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc"
+    [[ -r "$GCLOUD_COMP" ]] && . "$GCLOUD_COMP"
+    unset GCLOUD_COMP
+fi
+
 unset BASH_COMP BASH_COMP_2 AWS_COMP TMUX_COMP
 
 
