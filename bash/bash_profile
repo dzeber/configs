@@ -125,6 +125,15 @@ alias lld='ll --group-directories-first'
 TREE_EXCLUDE='__pycache__|.ipynb_checkpoints|*.pyc|*.git|*.egg*'
 alias lst='tree -alAC -I "$TREE_EXCLUDE"'
 
+# Use `trash` instead of `rm` if installed
+if [[ -n "$(command -v trash)" ]]; then
+    alias rm=trash
+    alias rmv=$(command -v rmv)
+else
+    # Otherwise require confirmation
+    alias rm='rm -i'
+fi
+
 # Print path elements on separate lines
 alias path='echo $PATH | tr -s ":" "\n"'
 
@@ -133,6 +142,14 @@ alias vars='(set -o posix; set)'
 
 # Always use Vim (for cases where applications default to opening vi).
 alias vi='vim'
+
+# Open with default browser on Mac
+if [[ $OSTYPE == 'darwin'* ]]; then
+    BROWSER_DEFAULT="$(defaults read \
+        ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure \
+        | awk -F'"' '/http;/{print window[(NR)-1]}{window[NR]=$2}')"
+    alias openb='open -b "$BROWSER_DEFAULT"'
+fi
 
 # Git commands
 alias gst='git status'
