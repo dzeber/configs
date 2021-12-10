@@ -127,8 +127,8 @@ alias lst='tree -alAC -I "$TREE_EXCLUDE"'
 
 # Use `trash` instead of `rm` if installed
 if [[ -n "$(command -v trash)" ]]; then
+    alias rmv=$(command -v rm)
     alias rm=trash
-    alias rmv=$(command -v rmv)
 else
     # Otherwise require confirmation
     alias rm='rm -i'
