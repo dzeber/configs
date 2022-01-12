@@ -50,6 +50,10 @@ if isdirectory(s:Vundle_path)
     " Plugin to stop accidentally quitting windows.
     "Plugin 'Carpetsmoker/confirm_quit.vim'
 
+    " Session management.
+    " Need to start recording one-time: `:Obsession <s:current_session_path>`
+    Plugin 'tpope/vim-obsession'
+
     " Improvements to netrw.
     Plugin 'tpope/vim-vinegar'
 
@@ -103,6 +107,19 @@ if isdirectory(s:Vundle_path)
     " Use 'ai'/'ii' as a text object for indented blocks,
     " 'aI' for lines above and below.
     Plugin 'michaeljsmith/vim-indent-object'
+
+    " Use 'aT'/'iT' as a text object for top-level blocks
+    " 'a' includes whitespace underneath
+    " Plugin 'adolenc/vim-textobj-toplevel'
+
+    " Use 'a,'/'i,' as a text object for function parameters
+    " 'a' includes comma and whitespace
+    " 'i2,' includes comma but not trailing whitespace
+    " Plugin 'sgur/vim-textobj-parameter'
+
+    " Use 'af'/'if' as a text object for Python functions, 'ac'/'ic' for classes
+    " '[/]pf/c' jumps between functions and classes
+    " Plugin 'bps/vim-textobj-python'
 
     " Fix deleting and pasting over text
     " Use 'gr' to replace a motion or selection with a given register contents
@@ -326,8 +343,8 @@ command! PdG ! pandoc % -s -f markdown_github -t html -o %:r.html --toc
 " Colour scheme switching
 
 " Save the current session
-execute "command! Svs mksession!" s:current_session_path
-" Load the last saved session
+"execute "command! Svs mksession!" s:current_session_path
+" Load the current session (maintained by Obsession)
 execute "command! Lds source" s:current_session_path
 
 " Abbreviations
@@ -669,23 +686,6 @@ command!
     \ Wr
     \ :execute "resize " . string(NumLinesForProp(<f-args>))
 
-
-" Automatic session management
-" ----------------------------
-
-" Set info to save with session
-"set sessionoptions=blank,buffers,curdir,folds,options,resize,tabpages
-"set sessionoptions+=winpos,winsize
-
-" Default session file.
-" TODO: when sourcing the session in the vimrc, the status line changes to
-" somthing weird, and relative window sizing is screwed up
-"let defaultsession = expand("~/vimfiles/sessions/currentsession.vim")
-"if filereadable(defaultsession)
- "   silent execute "source" defaultsession
-"endif
-
-" TODO: save session on exit (using VimLeave?)
 
 
 " Diff command
