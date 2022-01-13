@@ -241,13 +241,6 @@ augroup inscompletion
         \ let &l:infercase = s:curr_infercase
 augroup END
 
-" Keep backup file
-"if has("vms")
-"  set nobackup
-"else
-"  set backup
-"endif
-
 " Change working dir to containing dir of file in window
 set autochdir
 
@@ -606,8 +599,6 @@ command! -range IndentList
     \ | <line1>,<line2>s/^  \(\S\)/      \1/e
     \ | <line1>,<line2>s/^\(\S\)/- \1/e
 
-
-
 " Dedent Markdown bulleted list
 command! -range DedentList
     \ <line1>,<line2>s/^[-*+] //e
@@ -616,7 +607,6 @@ command! -range DedentList
     \ | <line1>,<line2>s/^      \(\S\)/  \1/e
     \ | <line1>,<line2>s/^        [-*+]/    */e
     \ | <line1>,<line2>s/^          \(\S\)/    \1/e
-
 
 
 " Plaintext mode
@@ -722,6 +712,18 @@ command!
     \ Wr
     \ :execute "resize " . string(NumLinesForProp(<f-args>))
 
+
+" Open in browser
+" ---------------
+
+if s:on_mac
+    command!
+        \ Openb
+        \ ! open -b
+        \ "$(defaults read
+        \ ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure
+        \ | awk -F'"' '/http;/{print window[(NR)-1]}{window[NR]=$2}')" %
+endif
 
 
 " Diff command
