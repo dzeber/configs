@@ -61,14 +61,16 @@ if isdirectory(s:Vundle_path)
     " Theming and visual elements
     "------------------------------
 
-    " Extensive selection of color schemes.
-    Plugin 'flazz/vim-colorschemes'
-
-    " lucius light theme is not working in vim-colorschemes: install separately.
+    " Lucius light theme is not working in vim-colorschemes: install separately.
     " This also adds commands to change between the themes:
     " `:colorscheme lucius`
     " `:LuciusLight`
+    " This needs to come before `vim-colorschemes` so as to show up first
+    " in the runtimepath.
     Plugin 'jonathanfilip/vim-lucius'
+
+    " Extensive selection of color schemes.
+    Plugin 'flazz/vim-colorschemes'
 
     " Show mark locations on left of window.
     Plugin 'kshenoy/vim-signature'
@@ -389,8 +391,9 @@ iabbrev \- ------------------------------
 set scrolloff=3
 " Show the cursor position all the time
 set ruler
-" Show line numbers
+" Show line numbers (relative numbering by default)
 set number
+set relativenumber
 " Indent new line same as previous
 set autoindent
 " Highlight current line
@@ -474,7 +477,6 @@ if has("gui_running")
     endif
 endif
 
-
 if s:has_colours
     let s:favourite_dark_themes = [
         \"wombat256mod",
@@ -482,13 +484,20 @@ if s:has_colours
         \"kalisi",
         \"flatlandia",
         \"parsec",
-        \"ayu"
+        \"ayu",
+        \"seoul256",
+        \"lucius"
     \]
 
     let s:favourite_light_themes = [
         \"solarized",
         \"lucius",
+        \"seoul256-light"
     \]
+
+    " Background brightness for seoul256 colorscheme
+    let g:seoul256_background = 235
+    let g:seoul256_light_background = 253
 
     function! ListFavouriteDarkThemes()
         for l:t in s:favourite_dark_themes
@@ -528,6 +537,20 @@ if s:has_colours
         \ SetLightTheme
         \ :call SetLightTheme(<q-args>)
 
+    " Syntax highlighting that should be applied to any colour scheme:
+    augroup allcolorschemes
+        autocmd!
+            " Make comments italic
+            " Clean up the appearance of the sign column.
+            " For now, drop background colors and make the marks bold.
+            " TODO: match the current color scheme.
+        autocmd ColorScheme *
+            \ highlight Comment gui=italic |
+            \ highlight SignColumn guibg=NONE ctermbg=NONE |
+            \ highlight SignatureMarkText term=bold cterm=bold gui=bold |
+            \ highlight SignatureMarkText ctermbg=NONE guibg=NONE
+    augroup END
+
     " Set current color scheme.
     if has("gui")
         if s:on_windows
@@ -549,17 +572,6 @@ if s:has_colours
         let macvim_skip_colorscheme=1
     endif
 endif
-
-
-" Make comments italic
-highlight Comment gui=italic
-
-" Clean up the appearance of the sign column.
-" For now, drop background colors and make the marks bold.
-" TODO: match the current color scheme.
-highlight SignColumn guibg=NONE ctermbg=NONE
-highlight SignatureMarkText term=bold cterm=bold gui=bold
-highlight SignatureMarkText ctermbg=NONE guibg=NONE
 
 " Maximize if using GUI
 "if has("gui_running")
