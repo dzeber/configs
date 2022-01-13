@@ -208,6 +208,36 @@ set wildmenu
 
 " Insert autocompletion:
 set completeopt=longest,menu
+" Complete from open files only
+set complete=.,w
+"
+" Completion behaviour:
+" - case-insensitive completions matching typed case for text files
+" - case-sensitive completions for other (ie. code) files
+let s:text_file_types = ["txt", "md"]
+function! s:InsertCompletionCase()
+    " Global case-sensitivity is set as desired for searching
+    " Override the global setting here for completions depending on file type
+    let s:curr_ignorecase = &ignorecase
+    let s:curr_infercase = &l:infercase
+    if index(s:text_file_types, expand("%:e")) < 0
+        set noignorecase
+    else
+        set ignorecase
+        setlocal infercase
+    endif
+endfunction
+
+augroup inscompletion
+    autocmd!
+    " No autocmd event for opening the completion popup
+    " Trigger on entering insertion mode instead
+    " Searching will require exiting back to normal mode
+    autocmd InsertEnter * call s:InsertCompletionCase()
+    autocmd InsertLeave *
+        \ let &ignorecase = s:curr_ignorecase |
+        \ let &l:infercase = s:curr_infercase
+augroup END
 
 " Keep backup file
 "if has("vms")
@@ -251,12 +281,6 @@ set incsearch
 " Use smart case sensitivity for searching:
 " case-sensitive only if search term includes an uppercase letter
 set ignorecase smartcase
-
-" augroup inscompletion
-"     autocmd!
-"     autocmd MenuPopup i set noignorecase
-"     autocmd CompleteDone * set ignorecase
-" augroup END
 
 " Put these in an autocmd group, so that we can delete them easily.
 augroup vimrcEx
