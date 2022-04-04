@@ -172,11 +172,12 @@ alias virtualenv3='virtualenv -p python3'
 alias make_kernel='python -m ipykernel install --user --name'
 # Setting line length for black
 #alias black='black -l 79'
-# Make sure Jupyter runs from the base conda env so that other conda envs
-# will be available as kernels (extension is installed to make this possible).
+
+# Make sure Jupyter runs from its dedicated conda env.
+# Other conda envs will be available as kernels
+# (extension is installed to make this possible).
 # If a different conda env is already active, this doesn't change it.
-alias ensure_conda='[[ -z "$CONDA_DEFAULT_ENV" ]] && conda activate base'
-alias jupyter='ensure_conda; jupyter'
+alias jupyter='conda activate jupyter; jupyter'
 alias jnb='start_jupyter_server'
 
 # R
@@ -225,7 +226,7 @@ start_jupyter_server () {
     if [[ -z "$port" && -n "$TMUX" ]]; then
         # No port specified and we are in an attached tmux session.
         # Try to parse port number from the current tmux window name.
-        win_name="$(tmux display-message -p '#W' | grep 'jupyter:\d\+')"
+        win_name="$(tmux display-message -p '#W' | grep 'jupyter:[0-9]\+')"
         if [[ -n "$win_name" ]]; then
             # Window name is of the form 'jupyter:<port>'.
             port="$(echo "$win_name" | sed 's/jupyter://')"
@@ -237,7 +238,7 @@ start_jupyter_server () {
         return 1
     fi
 
-    jupyter notebook --no-browser --port "$port"
+    jupyter lab --no-browser --port "$port"
 }
 
 # Run Python tool to display BibTeX entries.
