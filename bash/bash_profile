@@ -118,8 +118,8 @@ alias ls='ls --color=auto'
 # Customized short form. 
 alias la='ls -A --group-directories-first'
 # Customized long form.
-alias ll='ls -lAh'
-alias lld='ll --group-directories-first'
+alias lsl='ls -lAh'
+alias lld='lsl --group-directories-first'
 
 # Tree view
 TREE_EXCLUDE='__pycache__|.ipynb_checkpoints|*.pyc|*.git|*.egg*'
@@ -134,11 +134,19 @@ else
     alias rm='rm -i'
 fi
 
+# Replace `cat` with `bat` if installed
+if [[ -n "$(command -v bat)" ]]; then
+    export HAS_BAT=true
+    # Use minimal output styling.
+    export BAT_STYLE="numbers,changes"
+    alias cat='bat'
+fi
+
 # Print path elements on separate lines
-alias path='echo $PATH | tr -s ":" "\n"'
+alias path='echo $PATH | tr -s ":" "\n" | cat'
 
 # Print shell and environment variables (excluding functions)
-alias vars='(set -o posix; set)'
+alias vars='(set -o posix; set) | cat $([[ -n "$HAS_BAT" ]] && echo "-l sh")'
 
 # Always use Vim (for cases where applications default to opening vi).
 alias vi='vim'
@@ -190,6 +198,16 @@ alias jnb='start_jupyter_server'
 # Functions
 # ---------
 #
+
+# Shortcut for exploring a dir.
+# If called on a single file, print contents, otherwise list dir.
+ll () {
+    if [[ "$#" == 1 && -f "$1" ]]; then
+        cat "$1"
+    else
+        lsl "$@"
+    fi
+}
 
 # Check out a pull request as a local branch.
 # Usage: git_checkout_pr <N> (the PR ID)
