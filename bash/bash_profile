@@ -142,6 +142,12 @@ if [[ -n "$(command -v bat)" ]]; then
     alias cat='bat'
 fi
 
+# `ripgrep` defaults
+if [[ -n "$(command -v rg)" ]]; then
+    alias rg='rg --follow --hidden --smart-case --trim'
+    alias pyrg='rg -t py -t jupyter'
+fi
+
 # Print path elements on separate lines
 alias path='echo $PATH | tr -s ":" "\n" | cat'
 
