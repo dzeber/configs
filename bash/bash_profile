@@ -140,6 +140,10 @@ if [[ -n "$(command -v bat)" ]]; then
     # Use minimal output styling.
     export BAT_STYLE="numbers,changes"
     alias cat='bat'
+    # Formatting for `--help` text
+    alias bathelp='bat --plain --language=help'
+    # Page `man` through `bat`.
+    export MANPAGER="sh -c 'col -bx | bat --plain --language=man'"
 fi
 
 # `ripgrep` defaults
@@ -213,6 +217,13 @@ ll () {
     else
         lsl "$@"
     fi
+}
+
+# Pretty-print JSON. Use jq to format and output through bat.
+# Also accepts args to `jq`.
+# Usage: `cat file.json | jj`
+jj () {
+    jq "$@" | bat --language=json
 }
 
 # Check out a pull request as a local branch.
