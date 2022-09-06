@@ -15,7 +15,7 @@ let s:on_mac = has("mac") || has("macunix")
 
 " Current theme settings - see below
 let s:current_font_win = "consolas"
-let s:current_font_mac = "source"
+let s:current_font_mac = "source2"
 let s:current_theme_dark = "parsec"
 let s:current_theme_light = "seoul256-light"
 let s:current_theme_term = "wombat256mod"
@@ -150,6 +150,9 @@ if isdirectory(s:Vundle_path)
     call vundle#end()
     filetype plugin indent on
 endif
+
+" Load matchit (built-in package)
+packadd! matchit
 
 " Path for current session file.
 let s:current_session_path = s:vimdir . "/sessions/current.vim"
@@ -414,10 +417,12 @@ set showbreak=--->
 let s:has_colours = &t_Co > 2 || has("gui")
 
 if has("gui")
+    " Source Code Pro has new name on reinstall
     let s:favourite_fonts = {
         \"consolas": "Consolas:h11",
         \"osaka": "Osaka-Mono:h16",
         \"source": "SourceCodePro-Regular:h14",
+        \"source2": "SourceCodeProRoman-Regular:h14",
         \"monaco": "Monaco:h13",
         \"inconsolata": "Inconsolata:h15",
         \"writing": "AnonymousPro:h15",
