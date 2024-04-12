@@ -179,23 +179,13 @@ alias galias='git config --list |
 # Rmarkdown rendering.
 alias rmd='render_rmd'
 
-# Python tools
-# virtualenv for specific Python versions.
-alias virtualenv='virtualenv -p python'
-alias virtualenv2='virtualenv -p python2'
-alias virtualenv3='virtualenv -p python3'
 # Install a new IPython kernel.
 # Run inside an activated virtual env to use Juypter.
 # Usage: `make_kernel <name>`
-alias make_kernel='python -m ipykernel install --user --name'
+alias make_kernel='python -m ipykernel install --user --name $(pyenv local | head -n 1)'
 # Setting line length for black
 #alias black='black -l 79'
 
-# Make sure Jupyter runs from its dedicated conda env.
-# Other conda envs will be available as kernels
-# (extension is installed to make this possible).
-# If a different conda env is already active, this doesn't change it.
-alias jupyter='conda activate jupyter; jupyter'
 alias jnb='start_jupyter_server'
 
 # R
@@ -236,6 +226,11 @@ git_checkout_pr () {
     git checkout "$LOCAL_BRANCH"
 }
 
+
+# Pyenv local command defaulting to current global env
+pyenv_local () {
+    pyenv local "$1" "$(pyenv global | head -n 1)"
+}
 # print_vars () {
 #     local VAR
 #     for VAR in "$(vars)"; do
