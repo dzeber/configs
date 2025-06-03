@@ -15,13 +15,13 @@ let s:on_mac = has("mac") || has("macunix")
 
 " Current theme settings - see below
 let s:current_font_win = "consolas"
-let s:current_font_mac = "source2"
-let s:current_theme_dark = "parsec"
+let s:current_font_mac = "source"
+let s:current_theme_dark = "flatlandia"
 let s:current_theme_light = "seoul256-light"
 let s:current_theme_term = "wombat256mod"
 let s:current_theme_win = "seoul256"
 " Whether or not to use the dark theme in GUI.
-let s:use_darktheme = 0
+let s:use_darktheme = 1
 
 " Identify the vim user config dir.
 let s:vimdir = split(&rtp, ",")[0]
