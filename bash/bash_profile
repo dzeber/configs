@@ -192,6 +192,12 @@ alias jnb='start_jupyter_server'
 #alias R='R --no-save'
 
 
+# Window position save/restore
+# Uses ~/Dropbox/config/macos/window-layout.js script
+# Layouts stored under  ~/.window-layouts/
+alias winsave='osascript -l JavaScript ~/Dropbox/config/macos/window-layout.js save'
+alias winrestore='osascript -l JavaScript ~/Dropbox/config/macos/window-layout.js restore'
+
 
 #-----------------------------------------------------------------------------
 #
